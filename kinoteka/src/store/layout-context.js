@@ -13,6 +13,15 @@ export function LayoutContextProvider(props) {
   const [layoutTheme, setLayoutTheme] = useState(createTheme(
     {
       palette: {
+        info: {
+          main: `${colors.background}`,
+        },
+        secondary: {
+          main: `${colors.background}`,
+          dark: `${colors.primaryDarker}`,
+          light: `${colors.primaryLighter}`,
+          contrastText: `${colors.primaryBase}`
+        },
         primary: {
           main: `${colors.primaryBase}`,
           dark: `${colors.primaryDarker}`,
@@ -20,24 +29,31 @@ export function LayoutContextProvider(props) {
           contrastText: `${colors.background}`
         },
         background: {
-          paper: `${colors.background}`
+          paper: `${colors.background}`,
+          default: `${colors.background}`,
         }
     },
     components: {
-      MuiIconButton: {
-        styleOverrides: {
-          root: {
-            background: `${colors.primaryBase}`,
-          }
-        }
-      },
-      MuiSvgIcon: {
-        styleOverrides: {
-          root: {
-            color: `${colors.background}`,
-          }
-        }
-      },
+      // MuiIconButton: {
+      //   palette: {
+      //     secondary: {
+      //       main: `${colors.background}`,
+      //       contrastText: `${colors.primaryBase}`
+      //     },
+      //   },
+      //   styleOverrides: {
+      //     root: {
+      //       background: `${colors.primaryBase}`,
+      //     }
+      //   }
+      // },
+      // MuiSvgIcon: {
+      //   styleOverrides: {
+      //     root: {
+      //       color: `${colors.background}`,
+      //     }
+      //   }
+      // },
       MuiDrawer: {
         styleOverrides: {
           root: {
@@ -48,14 +64,23 @@ export function LayoutContextProvider(props) {
       MuiButtonBase: {
         styleOverrides: {
           root: {
+            color: `${colors.background}`,
             background: `${colors.primaryBase}`,
+          }
+        }
+      },
+      MuiCheckbox: {
+        styleOverrides: {
+          root: {
+            color: `${colors.primaryBase}`,
+            background: `${colors.background}`,
           }
         }
       },
       MuiPaper: {
         styleOverrides: {
           root: {
-            background: `${colors.primaryBase}`,
+            background: `${colors.background}`,
           }
         }
       },
@@ -88,6 +113,7 @@ export function LayoutContextProvider(props) {
     userMode !== "light" ? 
       setLayoutTheme(createTheme(
         {
+          type: 'light',
           palette: {
             primary: {
               main: `${colors.primaryBase}`,
@@ -98,18 +124,79 @@ export function LayoutContextProvider(props) {
             background: {
               paper: `${colors.background}`
             }
+        },
+        components: {
+          MuiIconButton: {
+            styleOverrides: {
+              root: {
+                color: `${colors.background}`,
+                background: `${colors.primaryBase}`,
+              }
+            }
           },
-          components: {
-            MuiButton: {
-              styleOverrides: {
-                root: {
-                  color: `${colors.primaryBase}`,
-                }
+          MuiSvgIcon: {
+            variants: [
+              {
+                props: { variant: 'dashboard' },
+                style: {
+                  color: `${colors.background}`,
+                },
+              },
+            ],
+          },
+          MuiDrawer: {
+            styleOverrides: {
+              root: {
+                color: `${colors.primaryBase}`,
+              }
+            }
+          },
+          MuiButtonBase: {
+            styleOverrides: {
+              root: {
+                color: `${colors.background}`,
+                background: `${colors.primaryBase}`,
+              }
+            }
+          },
+          MuiCheckbox: {
+            styleOverrides: {
+              root: {
+                color: `${colors.primaryBase}`,
+                background: `${colors.background}`,
+              }
+            }
+          },
+          MuiPaper: {
+            styleOverrides: {
+              root: {
+                background: `${colors.background}`,
+              }
+            }
+          },
+          MuiContainer: {
+            styleOverrides: {
+              root: {
+                background: `${colors.background}`,
+              }
+            }
+          },
+          MuiList: {
+            styleOverrides: {
+              root: {
+                background: `${colors.primaryBase}`,
+              }
+            }
+          },
+          MuiToolbar: {
+            styleOverrides: {
+              root: {
+                background: `${colors.primaryBase}`,
               }
             }
           }
         }
-      ))
+      }))
     : setLayoutTheme(createTheme())
   }
 

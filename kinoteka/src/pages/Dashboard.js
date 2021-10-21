@@ -106,6 +106,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 function DashboardContent() {
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
+  function toggleTheme() {
+    layoutContext.toggle(layoutContext.mode);    
+  }
   
   const [open, setOpen] = React.useState(true);
   const [data, setData] = React.useState([]);
@@ -140,6 +143,7 @@ function DashboardContent() {
             }}
           >
             <IconButton
+              color= 'secondary'
               edge="start"
               aria-label="open drawer"
               onClick={toggleDrawer}
@@ -158,7 +162,7 @@ function DashboardContent() {
             >
               Kinoteka
             </Typography>
-            <IconButton >
+            <IconButton variant='dashboard'  onClick={toggleTheme}>
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
@@ -174,12 +178,13 @@ function DashboardContent() {
               px: [1],
             }}
           >
-            <IconButton onClick={toggleDrawer}>
+            <IconButton color="secondary" onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
           <Divider />
           <List
+            color="secondary"
             onClick = {loadingTable}
             sx={{
               display: 'flex',

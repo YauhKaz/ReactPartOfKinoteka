@@ -128,7 +128,7 @@ export default function SignInSide() {
                 autoComplete="current-password"
               />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={<Checkbox value="remember" color='primary' />}
                 label="Remember me"
               />
               <Button
@@ -136,7 +136,7 @@ export default function SignInSide() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, color: `${theme.palette.background.paper}` }}
               >
                 Sign In
               </Button>
