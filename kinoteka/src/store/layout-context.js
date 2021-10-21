@@ -34,26 +34,20 @@ export function LayoutContextProvider(props) {
         }
     },
     components: {
-      // MuiIconButton: {
-      //   palette: {
-      //     secondary: {
-      //       main: `${colors.background}`,
-      //       contrastText: `${colors.primaryBase}`
-      //     },
-      //   },
-      //   styleOverrides: {
-      //     root: {
-      //       background: `${colors.primaryBase}`,
-      //     }
-      //   }
-      // },
-      // MuiSvgIcon: {
-      //   styleOverrides: {
-      //     root: {
-      //       color: `${colors.background}`,
-      //     }
-      //   }
-      // },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            background: `${colors.primaryBase}`,
+          }
+        }
+      },
+      MuiSvgIcon: {
+        styleOverrides: {
+          root: {
+            color: `${colors.background}`,
+          }
+        }
+      },
       MuiDrawer: {
         styleOverrides: {
           root: {
@@ -129,20 +123,16 @@ export function LayoutContextProvider(props) {
           MuiIconButton: {
             styleOverrides: {
               root: {
-                color: `${colors.background}`,
                 background: `${colors.primaryBase}`,
               }
             }
           },
           MuiSvgIcon: {
-            variants: [
-              {
-                props: { variant: 'dashboard' },
-                style: {
-                  color: `${colors.background}`,
-                },
-              },
-            ],
+            styleOverrides: {
+              root: {
+                color: `${colors.background}`,
+              }
+            }
           },
           MuiDrawer: {
             styleOverrides: {
@@ -164,6 +154,9 @@ export function LayoutContextProvider(props) {
               root: {
                 color: `${colors.primaryBase}`,
                 background: `${colors.background}`,
+                "& MuiSvgIcon": {
+                  background: `${colors.primaryBase}`,
+                }
               }
             }
           },

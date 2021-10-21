@@ -105,7 +105,7 @@ export default function SignInSide() {
                 autoComplete="current-password"
               />
               <FormControlLabel
-                control={<Checkbox value="remember" color='primary' />}
+                control={<Checkbox value="remember" color='primary' sx={{ '& .MuiSvgIcon-root': { fill: `${theme.palette.primary.main}` } }}/>}
                 label="Remember me"
               />
               <Button

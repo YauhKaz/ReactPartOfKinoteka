@@ -137,13 +137,12 @@ function DashboardContent() {
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
-          <Toolbar
+          <Toolbar 
             sx={{
               pr: '24px', // keep right padding when drawer closed
             }}
           >
             <IconButton
-              color= 'secondary'
               edge="start"
               aria-label="open drawer"
               onClick={toggleDrawer}
@@ -169,7 +168,7 @@ function DashboardContent() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open={open} sx={{"& div":{backgroundColor: `${theme.palette.primary.main}`}}}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -191,6 +190,9 @@ function DashboardContent() {
               flexDirection: 'row',
               alignItems: 'center',
               color: `${theme.palette.background.paper}`,
+              '& div': { display: 'grid', marginLeft: '8px',
+              '& div': { display: 'flex', flexDirection: 'row'}
+            },
             }}>{mainListItems}</List>
           <Divider />
         </Drawer>
