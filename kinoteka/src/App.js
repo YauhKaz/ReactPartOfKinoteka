@@ -1,9 +1,19 @@
 import './App.css';
+import SignInSide from './pages/SignInSide';
+import { Route, Switch } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <div className="App">
-      <p>Hello world</p>
+    <div>
+      <Switch>
+        <Route path='/' exact>
+          <SignInSide/>
+        </Route>
+        <Route path='/main'>
+          <Dashboard/>
+        </Route>
+      </Switch>
     </div>
   );
 }
