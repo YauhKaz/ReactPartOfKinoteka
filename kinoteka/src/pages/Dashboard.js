@@ -112,6 +112,7 @@ function DashboardContent() {
   
   const [open, setOpen] = React.useState(true);
   const [data, setData] = React.useState([]);
+  const [columns, setColumns] = React.useState([]);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -119,7 +120,14 @@ function DashboardContent() {
   async function dataLoadingFetch(url) {
     try {
       const response = await fetch(url);
-      const json = await response.json();  
+      const json = await response.json(); 
+      let columnsArray = [];
+      for (let key in json[0]) {
+        if (key !== 'images' && key !== 'actors' && key !== 'categories') {
+          columnsArray.push({title: `${key}`, field: `${key}`});
+        }        
+      }
+      setColumns(columnsArray);
       setData(json);      
     } catch (error) {
       console.error('Ошибка:', error);
@@ -136,7 +144,7 @@ function DashboardContent() {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
+        <AppBar position="absolute" open={open} sx={{"& div":{backgroundColor: `${theme.palette.primary.main}`}}}>
           <Toolbar 
             sx={{
               pr: '24px', // keep right padding when drawer closed
@@ -161,7 +169,7 @@ function DashboardContent() {
             >
               Kinoteka
             </Typography>
-            <IconButton variant='dashboard'  onClick={toggleTheme}>
+            <IconButton onClick={toggleTheme}>
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
@@ -177,7 +185,7 @@ function DashboardContent() {
               px: [1],
             }}
           >
-            <IconButton color="secondary" onClick={toggleDrawer}>
+            <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
@@ -190,8 +198,8 @@ function DashboardContent() {
               flexDirection: 'row',
               alignItems: 'center',
               color: `${theme.palette.background.paper}`,
-              '& div': { display: 'grid', marginLeft: '8px',
-              '& div': { display: 'flex', flexDirection: 'row'}
+              '& div': { display: 'grid',
+              '& div': { display: 'flex', flexDirection: 'row', padding: '10px'}
             },
             }}>{mainListItems}</List>
           <Divider />
@@ -221,14 +229,7 @@ function DashboardContent() {
                 }
               }}
               icons={tableIcons}
-              columns={[
-                { title: 'Id', field: 'id' },
-                { title: 'Name', field: 'title' },
-                { title: 'Description', field: 'description' },
-                { title: 'createAt', field: 'createAt' },
-                { title: 'updateAt', field: 'updateAt'},
-                { title: 'Year', field: 'year', type: 'numeric' },
-              ]}
+              columns={columns}
               data={data}
               title="Films"
             />   
