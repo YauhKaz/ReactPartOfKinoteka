@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 import LayoutContext from '../store/layout-context';
 import { useHistory } from 'react-router-dom';
+import api from '../API/ApiClient'
 
 function Copyright(props) {
   return (
@@ -39,35 +40,11 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const url = 'http://localhost:3000/auth/login';
     const userData = {
       username: data.get('username'),
       password: data.get('password'),
     }
-    async function userLoginFetch() {
-      try {
-        const response = await fetch(url, {
-          method: 'POST', 
-          body: JSON.stringify(userData),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        const json = await response.json();
-        if (response.ok && data.get('username') === 'admin') {
-          history.push("/main");
-        }
-        else {
-          alert('You sre not admin');
-        }
-        console.log('Успех:', JSON.stringify(json));
-      } catch (error) {
-        console.error('Ошибка:', error);
-      }
-    }
-
-    userLoginFetch();
-
+    api.load(userData,history);
   };
 
   return (
@@ -128,7 +105,7 @@ export default function SignInSide() {
                 autoComplete="current-password"
               />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={<Checkbox value="remember" color='primary' sx={{ '& .MuiSvgIcon-root': { fill: `${theme.palette.primary.main}` } }}/>}
                 label="Remember me"
               />
               <Button
@@ -136,7 +113,7 @@ export default function SignInSide() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, color: `${theme.palette.background.paper}` }}
               >
                 Sign In
               </Button>

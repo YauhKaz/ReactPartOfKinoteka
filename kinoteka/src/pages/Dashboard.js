@@ -106,9 +106,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 function DashboardContent() {
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
+  function toggleTheme() {
+    layoutContext.toggle(layoutContext.mode);    
+  }
   
   const [open, setOpen] = React.useState(true);
   const [data, setData] = React.useState([]);
+  const [columns, setColumns] = React.useState([]);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -116,7 +120,14 @@ function DashboardContent() {
   async function dataLoadingFetch(url) {
     try {
       const response = await fetch(url);
-      const json = await response.json();  
+      const json = await response.json(); 
+      let columnsArray = [];
+      for (let key in json[0]) {
+        if (key !== 'images' && key !== 'actors' && key !== 'categories') {
+          columnsArray.push({title: `${key}`, field: `${key}`});
+        }        
+      }
+      setColumns(columnsArray);
       setData(json);      
     } catch (error) {
       console.error('Ошибка:', error);
@@ -133,8 +144,8 @@ function DashboardContent() {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
-          <Toolbar
+        <AppBar position="absolute" open={open} sx={{"& div":{backgroundColor: `${theme.palette.primary.main}`}}}>
+          <Toolbar 
             sx={{
               pr: '24px', // keep right padding when drawer closed
             }}
@@ -158,14 +169,14 @@ function DashboardContent() {
             >
               Kinoteka
             </Typography>
-            <IconButton >
+            <IconButton onClick={toggleTheme}>
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open={open} sx={{"& div":{backgroundColor: `${theme.palette.primary.main}`}}}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -180,12 +191,16 @@ function DashboardContent() {
           </Toolbar>
           <Divider />
           <List
+            color="secondary"
             onClick = {loadingTable}
             sx={{
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
               color: `${theme.palette.background.paper}`,
+              '& div': { display: 'grid',
+              '& div': { display: 'flex', flexDirection: 'row', padding: '10px'}
+            },
             }}>{mainListItems}</List>
           <Divider />
         </Drawer>
@@ -214,14 +229,7 @@ function DashboardContent() {
                 }
               }}
               icons={tableIcons}
-              columns={[
-                { title: 'Id', field: 'id' },
-                { title: 'Name', field: 'title' },
-                { title: 'Description', field: 'description' },
-                { title: 'createAt', field: 'createAt' },
-                { title: 'updateAt', field: 'updateAt'},
-                { title: 'Year', field: 'year', type: 'numeric' },
-              ]}
+              columns={columns}
               data={data}
               title="Films"
             />   
