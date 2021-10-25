@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useContext } from 'react';
-import { styled, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -18,6 +17,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems } from '../components/listItems';
 import MaterialTable from '@material-table/core';
 import LayoutContext from '../store/layout-context';
+import styled, {ThemeProvider} from 'styled-components';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -59,9 +59,41 @@ const tableIcons = {
 
 const drawerWidth = 240;
 
+const TypographyComponent = styled(Typography)(
+  ({theme}) => `
+  color: ${theme.palette.background.paper};
+  `,
+);
+
+const BoxComponent = styled(Box)(
+  ({theme}) => `
+    background: ${theme.palette.background.paper};
+  `,
+);
+
+const ListComponent = styled(List)(
+  ({theme}) => `
+    background: ${theme.palette.primary.main};
+    color: ${theme.palette.background.paper};
+  `,
+);
+
+const IconButtonComponent = styled(IconButton)(
+  ({theme}) => `
+  & svg {color: ${theme.palette.background.paper}};
+  `,
+);
+
+
+
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
+  '& div': {
+    background: `${theme.palette.primary.main}`,
+    color: `${theme.palette.background.paper}`,
+  },
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
@@ -79,6 +111,10 @@ const AppBar = styled(MuiAppBar, {
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
+    '& div': {
+      background: `${theme.palette.primary.main}`,
+      color: `${theme.palette.background.paper}`,
+    },
     '& .MuiDrawer-paper': {
       position: 'relative',
       whiteSpace: 'nowrap',
@@ -144,13 +180,13 @@ function DashboardContent() {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open} sx={{"& div":{backgroundColor: `${theme.palette.primary.main}`}}}>
+        <AppBar position="absolute" open={open}>
           <Toolbar 
             sx={{
               pr: '24px', // keep right padding when drawer closed
             }}
           >
-            <IconButton
+            <IconButtonComponent
               edge="start"
               aria-label="open drawer"
               onClick={toggleDrawer}
@@ -160,23 +196,23 @@ function DashboardContent() {
               }}
             >
               <MenuIcon />
-            </IconButton>
-            <Typography
+            </IconButtonComponent>
+            <TypographyComponent
               component="h1"
               variant="h6"
               noWrap
-              sx={{ flexGrow: 1, color: `${theme.palette.background.paper}` }}
+              sx={{ flexGrow: 1 }}
             >
               Kinoteka
-            </Typography>
-            <IconButton onClick={toggleTheme}>
+            </TypographyComponent>
+            <IconButtonComponent onClick={toggleTheme}>
               <Badge badgeContent={1} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButtonComponent>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open} sx={{"& div":{backgroundColor: `${theme.palette.primary.main}`}}}>
+        <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -185,29 +221,27 @@ function DashboardContent() {
               px: [1],
             }}
           >
-            <IconButton onClick={toggleDrawer}>
+            <IconButtonComponent onClick={toggleDrawer}>
               <ChevronLeftIcon />
-            </IconButton>
+            </IconButtonComponent>
           </Toolbar>
           <Divider />
-          <List
+          <ListComponent
             color="secondary"
             onClick = {loadingTable}
             sx={{
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-              color: `${theme.palette.background.paper}`,
               '& div': { display: 'grid',
-              '& div': { display: 'flex', flexDirection: 'row', padding: '10px'}
+              '& div': { display: 'flex', flexDirection: 'row', padding: '10px', color: `${theme.palette.background.paper}`}
             },
-            }}>{mainListItems}</List>
+            }}>{mainListItems}</ListComponent>
           <Divider />
         </Drawer>
-        <Box
+        <BoxComponent
           component="main"
           sx={{
-            backgroundColor: `${theme.palette.background.paper}`,
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
@@ -234,7 +268,7 @@ function DashboardContent() {
               title="Films"
             />   
           </Container>
-        </Box>
+        </BoxComponent>
       </Box>
     </ThemeProvider>
     
