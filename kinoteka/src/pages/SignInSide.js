@@ -15,11 +15,16 @@ import Typography from '@mui/material/Typography';
 import LayoutContext from '../store/layout-context';
 import { useHistory } from 'react-router-dom';
 import api from '../API/ApiClient';
-import styled, {ThemeProvider} from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
         My Website
@@ -31,27 +36,27 @@ function Copyright(props) {
 }
 
 const CheckboxComponent = styled(Checkbox)(
-  ({theme}) => `
+  ({ theme }) => `
     background: ${theme.palette.background.paper};
     & svg {color: ${theme.palette.primary.main}};
   `,
 );
 
 const AvatarComponent = styled(Avatar)(
-  ({theme}) => `
+  ({ theme }) => `
     background: ${theme.palette.primary.main};
     & svg {color: ${theme.palette.background.paper}};
   `,
 );
 
 const TypographyComponent = styled(Typography)(
-  ({theme}) => `
+  ({ theme }) => `
   color: ${theme.palette.primary.main};
   `,
 );
 
 const ButtonComponent = styled(Button)(
-  ({theme}) => `
+  ({ theme }) => `
   background: ${theme.palette.primary.main};
   color: ${theme.palette.background.paper};
   :hover {
@@ -61,38 +66,54 @@ const ButtonComponent = styled(Button)(
 );
 
 const GridComponent = styled(Grid)(
-  ({theme}) => `
+  ({ theme }) => `
     background: ${theme.palette.background.paper};
-  `
+  `,
 );
 
 const LinkConponent = styled(Link)(
-  ({theme}) => `
+  ({ theme }) => `
     color: ${theme.palette.primary.main};
-  `
+  `,
+);
+
+const FormControlLabelConponent = styled(FormControlLabel)(
+  ({ theme }) => `
+    color: ${theme.palette.primary.main};
+  `,
 );
 
 const TextFieldComponent = styled(TextField)(
-  ({theme}) => `
+  ({ theme }) => `
     color: ${theme.palette.primary.main};
-    :focus {
+    & .Mui-focused {
       color: ${theme.palette.primary.main};
-      border-color: ${theme.palette.primary.main};
-    };
-    & legend {color: ${theme.palette.primary.main}};
-  `
+    }
+    & label {
+      color:  ${theme.palette.primary.main};
+      opacity: .8;
+    }
+    & div {
+      color: ${theme.palette.primary.main};
+      & .Mui-focused {
+        color: ${theme.palette.primary.main};
+        border-color: ${theme.palette.primary.main};
+      }
+      & fieldset {
+        color: ${theme.palette.primary.main};
+        border-color: ${theme.palette.primary.main} !important;
+      }
+    }
+  `,
 );
-
-
 
 export default function SignInSide() {
   const layoutContext = useContext(LayoutContext);
   const history = useHistory();
   let theme = layoutContext.theme;
 
-
   function toggleTheme() {
-    layoutContext.toggle(layoutContext.mode);    
+    layoutContext.toggle(layoutContext.mode);
   }
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -100,15 +121,19 @@ export default function SignInSide() {
     const userData = {
       username: data.get('username'),
       password: data.get('password'),
-    }
-    api.load(userData,history);
+    };
+    api.load(userData, history);
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ 
-        height: '100vh'
-      }}>
+      <Grid
+        container
+        component="main"
+        sx={{
+          height: '100vh',
+        }}
+      >
         <CssBaseline />
         <Grid
           item
@@ -116,15 +141,26 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://upload.wikimedia.org/wikipedia/commons/2/2f/Sala_de_cine.jpg)',
+            backgroundImage:
+              'url(https://upload.wikimedia.org/wikipedia/commons/2/2f/Sala_de_cine.jpg)',
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+              t.palette.mode === 'light'
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />
-        <GridComponent item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <GridComponent
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          square
+        >
           <Box
             sx={{
               my: 8,
@@ -140,7 +176,12 @@ export default function SignInSide() {
             <TypographyComponent component="h1" variant="h5">
               Sign in
             </TypographyComponent>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 1 }}
+            >
               <TextFieldComponent
                 margin="normal"
                 required
@@ -161,7 +202,7 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
+              <FormControlLabelConponent
                 control={<CheckboxComponent value="remember" />}
                 label="Remember me"
               />

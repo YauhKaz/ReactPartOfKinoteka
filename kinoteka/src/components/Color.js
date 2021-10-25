@@ -1,5 +1,4 @@
 export const colors = {
-
   white: 'white',
   black: 'black',
 
@@ -18,8 +17,8 @@ export const colors = {
   secondaryBase: '#181526',
   secondaryDark: '#0F0D17',
   secondaryDarker: '#040407',
-  
+
   // OTHER
 
   background: '#F2F0ED',
-}
+};

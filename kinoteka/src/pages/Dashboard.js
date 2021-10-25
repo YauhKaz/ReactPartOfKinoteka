@@ -17,75 +17,35 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems } from '../components/listItems';
 import MaterialTable from '@material-table/core';
 import LayoutContext from '../store/layout-context';
-import styled, {ThemeProvider} from 'styled-components';
-
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
-
-import { forwardRef } from 'react';
-
-const tableIcons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-  };
+import styled, { ThemeProvider } from 'styled-components';
+import { tableIcons } from '../components/TableIcons';
 
 const drawerWidth = 240;
 
 const TypographyComponent = styled(Typography)(
-  ({theme}) => `
+  ({ theme }) => `
   color: ${theme.palette.background.paper};
   `,
 );
 
 const BoxComponent = styled(Box)(
-  ({theme}) => `
+  ({ theme }) => `
     background: ${theme.palette.background.paper};
   `,
 );
 
 const ListComponent = styled(List)(
-  ({theme}) => `
+  ({ theme }) => `
     background: ${theme.palette.primary.main};
     color: ${theme.palette.background.paper};
   `,
 );
 
 const IconButtonComponent = styled(IconButton)(
-  ({theme}) => `
+  ({ theme }) => `
   & svg {color: ${theme.palette.background.paper}};
   `,
 );
-
-
-
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -109,62 +69,62 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& div': {
-      background: `${theme.palette.primary.main}`,
-      color: `${theme.palette.background.paper}`,
-    },
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  '& div': {
+    background: `${theme.palette.primary.main}`,
+    color: `${theme.palette.background.paper}`,
+  },
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    ...(!open && {
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 function DashboardContent() {
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
   function toggleTheme() {
-    layoutContext.toggle(layoutContext.mode);    
+    layoutContext.toggle(layoutContext.mode);
   }
-  
+
   const [open, setOpen] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
   const toggleDrawer = () => {
     setOpen(!open);
   };
-    
+
   async function dataLoadingFetch(url) {
     try {
       const response = await fetch(url);
-      const json = await response.json(); 
+      const json = await response.json();
       let columnsArray = [];
       for (let key in json[0]) {
         if (key !== 'images' && key !== 'actors' && key !== 'categories') {
-          columnsArray.push({title: `${key}`, field: `${key}`});
-        }        
+          columnsArray.push({ title: `${key}`, field: `${key}` });
+        }
       }
       setColumns(columnsArray);
-      setData(json);      
+      setData(json);
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -172,18 +132,18 @@ function DashboardContent() {
 
   const loadingTable = (e) => {
     let urlEnd = e.target.outerText.toLowerCase();
-    const url = `http://localhost:3000/${urlEnd}`; 
+    const url = `http://localhost:3000/${urlEnd}`;
     dataLoadingFetch(url);
-  }
+  };
 
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
-          <Toolbar 
+          <Toolbar
             sx={{
-              pr: '24px', // keep right padding when drawer closed
+              pr: '24px',
             }}
           >
             <IconButtonComponent
@@ -228,15 +188,24 @@ function DashboardContent() {
           <Divider />
           <ListComponent
             color="secondary"
-            onClick = {loadingTable}
+            onClick={loadingTable}
             sx={{
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-              '& div': { display: 'grid',
-              '& div': { display: 'flex', flexDirection: 'row', padding: '10px', color: `${theme.palette.background.paper}`}
-            },
-            }}>{mainListItems}</ListComponent>
+              '& div': {
+                display: 'grid',
+                '& div': {
+                  display: 'flex',
+                  flexDirection: 'row',
+                  padding: '10px',
+                  color: `${theme.palette.background.paper}`,
+                },
+              },
+            }}
+          >
+            {mainListItems}
+          </ListComponent>
           <Divider />
         </Drawer>
         <BoxComponent
@@ -248,30 +217,32 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4, }}>
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {/* Table */}
             <MaterialTable
-              style={{color: `${theme.palette.primary.main}`, backgroundColor: `${theme.palette.background.paper}`}}
+              style={{
+                color: `${theme.palette.primary.main}`,
+                backgroundColor: `${theme.palette.background.paper}`,
+              }}
               options={{
                 headerStyle: {
                   backgroundColor: `${theme.palette.background.paper}`,
-                  color: `${theme.palette.primary.main}`
+                  color: `${theme.palette.primary.main}`,
                 },
                 rowStyle: {
                   backgroundColor: `${theme.palette.background.paper}`,
-                  color: `${theme.palette.primary.main}`
-                }
+                  color: `${theme.palette.primary.main}`,
+                },
               }}
               icons={tableIcons}
               columns={columns}
               data={data}
               title="Films"
-            />   
+            />
           </Container>
         </BoxComponent>
       </Box>
     </ThemeProvider>
-    
   );
 }
 
