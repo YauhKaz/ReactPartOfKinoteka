@@ -3,6 +3,7 @@ import * as React from 'react';
 import SignInSide from './pages/SignInSide';
 import { Route, Switch } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
+import NewItem from './pages/NewItem';
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
         </Route>
         <Route path="/main">
           <Dashboard />
+        </Route>
+        <Route path="/new">
+          <NewItem />
         </Route>
       </Switch>
     </div>

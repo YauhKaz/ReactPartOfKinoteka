@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -105,6 +106,8 @@ function DashboardContent() {
   function toggleTheme() {
     layoutContext.toggle(layoutContext.mode);
   }
+
+  const history = useHistory();
 
   const [open, setOpen] = React.useState(true);
   const [data, setData] = React.useState([]);
@@ -238,6 +241,16 @@ function DashboardContent() {
               columns={columns}
               data={data}
               title="Films"
+              actions={[
+                {
+                  icon: 'add',
+                  tooltip: 'Add User',
+                  isFreeAction: true,
+                  onClick: () => {
+                    history.push('/new');
+                  },
+                },
+              ]}
             />
           </Container>
         </BoxComponent>
