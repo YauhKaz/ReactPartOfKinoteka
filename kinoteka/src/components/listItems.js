@@ -8,10 +8,10 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
 export const mainListItems = (
-  <div >
+  <div>
     <ListItem button>
       <ListItemIcon>
-        <DashboardIcon/>
+        <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Movies" />
     </ListItem>
