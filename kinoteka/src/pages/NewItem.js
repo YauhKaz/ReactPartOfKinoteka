@@ -1,17 +1,54 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import { useParams } from 'react-router-dom';
+import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import LayoutContext from '../store/layout-context';
+import api from '../API/ApiClient';
+
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 60%;
+  height: 250px;
+`;
+
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+`;
 
 const NewItem = () => {
   const history = useHistory();
   let tempNewItem;
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
+  const { id } = useParams();
+  const [initialValue, setInitialValue] = React.useState({
+    name: '',
+    dob: '',
+    sex: '',
+    photoUrl: '',
+  });
+  React.useEffect(() => {
+    if (id !== undefined) {
+      api.loadOneActor(id).then((result) => {
+        setInitialValue({
+          name: result.name,
+          dob: '',
+          sex: result.sex,
+          photoUrl: result.photoUrl,
+        });
+      });
+    }
+  }, []);
 
   const validationShema = yup.object().shape({
     name: yup
@@ -24,7 +61,6 @@ const NewItem = () => {
       .string()
       .typeError('Должно быть строкой')
       .required('Обязательно')
-      .min(3, 'Короткое описание')
       .max(10, 'Длинное описание'),
     photoUrl: yup
       .string()
@@ -44,18 +80,15 @@ const NewItem = () => {
           height: '400px',
           background: 'white',
           flexDirection: 'row',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <Formik
-          initialValues={{
-            name: '',
-            dob: '',
-            sex: '',
-            photoUrl: '',
-          }}
+          initialValues={initialValue}
           validateOnBlur
           validationSchema={validationShema}
+          enableReinitialize
           onSubmit={(values) => {
             tempNewItem = [];
             tempNewItem.push({
@@ -64,30 +97,8 @@ const NewItem = () => {
               sex: values.sex,
               photoUrl: values.photoUrl,
             });
-
-            const url = 'http://localhost:3000/actors';
-
-            async function loadNewActor() {
-              try {
-                const response = await fetch(url, {
-                  method: 'POST',
-                  body: JSON.stringify(tempNewItem[0]),
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                });
-                const json = await response.json();
-                if (response.ok) {
-                  history.push('/main');
-                } else {
-                  alert('You are not admin');
-                }
-                console.log('Успех:', JSON.stringify(json));
-              } catch (error) {
-                console.error('Ошибка:', error);
-              }
-            }
-            loadNewActor();
+            if (id === undefined) api.loadNewActor(tempNewItem[0], history);
+            else api.loadUpdateActor(id, tempNewItem[0], history);
           }}
         >
           {({
@@ -100,10 +111,9 @@ const NewItem = () => {
             handleReset,
           }) => (
             <>
-              <section>
-                <div>
+              <Section>
+                <Div>
                   <label htmlFor="name"> Name </label>
-                  <br />
                   <input
                     type={'text'}
                     value={values.name}
@@ -112,9 +122,9 @@ const NewItem = () => {
                     name={'name'}
                   />
                   {touched.name && errors.name && <p>{errors.name}</p>}
-                </div>
-                <div>
-                  <label htmlFor="dob">DoB</label>
+                </Div>
+                <Div>
+                  <label htmlFor="dob">Date of Birthday</label>
                   <input
                     type={'date'}
                     value={values.dob}
@@ -123,20 +133,20 @@ const NewItem = () => {
                     name={'dob'}
                   />
                   {touched.dob && errors.dob && <p>{errors.dob}</p>}
-                </div>
-                <div>
+                </Div>
+                <Div>
                   <label htmlFor="sex">Sex</label>
                   <input
                     type={'text'}
-                    value={values.poster}
+                    value={values.sex}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'sex'}
                   />
                   {touched.sex && errors.sex && <p>{errors.sex}</p>}
-                </div>
-                <div>
-                  <label htmlFor="photoUrl">photoUrl</label>
+                </Div>
+                <Div>
+                  <label htmlFor="photoUrl">Photo</label>
                   <input
                     type={'text'}
                     value={values.photoUrl}
@@ -147,14 +157,14 @@ const NewItem = () => {
                   {touched.photoUrl && errors.photoUrl && (
                     <p>{errors.photoUrl}</p>
                   )}
-                </div>
+                </Div>
                 <div>
                   <button onClick={handleSubmit} type={'submit'}>
                     Submit
                   </button>
                   <input onClick={handleReset} type="button" value="Clear" />
                 </div>
-              </section>
+              </Section>
             </>
           )}
         </Formik>

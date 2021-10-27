@@ -20,6 +20,7 @@ import MaterialTable from '@material-table/core';
 import LayoutContext from '../store/layout-context';
 import styled, { ThemeProvider } from 'styled-components';
 import { tableIcons } from '../components/TableIcons';
+import api from '../API/ApiClient';
 
 const drawerWidth = 240;
 
@@ -107,6 +108,14 @@ function DashboardContent() {
     layoutContext.toggle(layoutContext.mode);
   }
 
+  React.useEffect(() => {
+    let curentTable =
+      localStorage.getItem('currentTable') === null
+        ? 'movies'
+        : localStorage.getItem('currentTable');
+    dataLoadingFetch(`http://localhost:3000/${curentTable}`);
+  }, []);
+
   const history = useHistory();
 
   const [open, setOpen] = React.useState(true);
@@ -136,7 +145,12 @@ function DashboardContent() {
   const loadingTable = (e) => {
     let urlEnd = e.target.outerText.toLowerCase();
     const url = `http://localhost:3000/${urlEnd}`;
+    localStorage.setItem('currentTable', urlEnd);
     dataLoadingFetch(url);
+  };
+
+  const deleteRow = (id) => {
+    api.deleteActor(id);
   };
 
   return (
@@ -240,14 +254,31 @@ function DashboardContent() {
               icons={tableIcons}
               columns={columns}
               data={data}
-              title="Films"
+              title={
+                localStorage.getItem('currentTable').charAt(0).toUpperCase() +
+                localStorage.getItem('currentTable').substr(1)
+              }
               actions={[
                 {
                   icon: 'add',
-                  tooltip: 'Add User',
+                  tooltip: 'Add icon',
                   isFreeAction: true,
                   onClick: () => {
                     history.push('/new');
+                  },
+                },
+                {
+                  icon: 'delete',
+                  tooltip: 'Delete Actor',
+                  onClick: (e, rowData) => {
+                    deleteRow(rowData.id);
+                  },
+                },
+                {
+                  icon: 'edit',
+                  tooltip: 'Edit Actor',
+                  onClick: (e, rowData) => {
+                    history.push(`/edit/${rowData.id}`);
                   },
                 },
               ]}

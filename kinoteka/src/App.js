@@ -18,6 +18,9 @@ function App() {
         <Route path="/new">
           <NewItem />
         </Route>
+        <Route path="/edit/:id">
+          <NewItem />
+        </Route>
       </Switch>
     </div>
   );
