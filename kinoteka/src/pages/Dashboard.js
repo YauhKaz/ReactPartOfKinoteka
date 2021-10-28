@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -15,14 +16,12 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems } from '../components/listItems';
-import MaterialTable from '@material-table/core';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import MainListItems from '../components/listItems';
 import LayoutContext from '../store/layout-context';
 import styled, { ThemeProvider } from 'styled-components';
-import { tableIcons } from '../components/TableIcons';
+import Table from './Table';
+import NewItem from './NewItem';
+import { Route, Switch } from 'react-router-dom';
 import api from '../API/ApiClient';
 
 const drawerWidth = 240;
@@ -112,27 +111,28 @@ function DashboardContent() {
   }
 
   const history = useHistory();
+  let obj = useLocation();
 
   const [open, setOpen] = React.useState(true);
   const [data, setData] = React.useState([]);
+  const [nameOfTable, setNameOfTable] = React.useState('Movies');
   const [columns, setColumns] = React.useState([]);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  let curentTable =
-    localStorage.getItem('currentTable') === null
-      ? 'movies'
-      : localStorage.getItem('currentTable');
-
   React.useEffect(() => {
-    dataLoadingFetch(`http://localhost:3000/${curentTable}`);
-  }, [data]);
+    dataLoadingFetch(`http://localhost:3000/${nameOfTable}`, history, obj);
+  }, []);
 
-  //Move to API
+  // React.useEffect(() => {
+  //   dataLoadingFetch(`http://localhost:3000/${nameOfTable}`, history, obj);
+  // }, [data]);
+
+  // Move to API
   async function dataLoadingFetch(url) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, history, obj);
       const json = await response.json();
       let columnsArray = [];
       for (let key in json[0]) {
@@ -142,6 +142,7 @@ function DashboardContent() {
       }
       setColumns(columnsArray);
       setData(json);
+      if (obj.pathname !== '/main') history.push('/main');
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -149,13 +150,12 @@ function DashboardContent() {
 
   const loadingTable = (e) => {
     let urlEnd = e.target.outerText.toLowerCase();
+    setNameOfTable(e.target.outerText);
     const url = `http://localhost:3000/${urlEnd}`;
-    localStorage.setItem('currentTable', urlEnd);
-    dataLoadingFetch(url);
+    dataLoadingFetch(url, history, obj);
   };
 
   const deleteRow = (id) => {
-    let nameOfTable = localStorage.getItem('currentTable');
     api.deleteItem(id, nameOfTable);
   };
 
@@ -227,7 +227,7 @@ function DashboardContent() {
               },
             }}
           >
-            {mainListItems}
+            <MainListItems />
           </ListComponent>
           <Divider />
         </Drawer>
@@ -242,52 +242,22 @@ function DashboardContent() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {/* Table */}
-            <MaterialTable
-              style={{
-                color: `${theme.palette.primary.main}`,
-                backgroundColor: `${theme.palette.background.paper}`,
-              }}
-              options={{
-                headerStyle: {
-                  backgroundColor: `${theme.palette.background.paper}`,
-                  color: `${theme.palette.primary.main}`,
-                },
-                rowStyle: {
-                  backgroundColor: `${theme.palette.background.paper}`,
-                  color: `${theme.palette.primary.main}`,
-                },
-              }}
-              icons={tableIcons}
-              columns={columns}
-              data={data}
-              title={
-                curentTable.charAt(0).toUpperCase() + curentTable.substr(1)
-              }
-              actions={[
-                {
-                  icon: AddIcon,
-                  tooltip: 'Add Item',
-                  isFreeAction: true,
-                  onClick: () => {
-                    history.push('/new');
-                  },
-                },
-                {
-                  icon: DeleteIcon,
-                  tooltip: 'Delete Item',
-                  onClick: (e, rowData) => {
-                    deleteRow(rowData.id);
-                  },
-                },
-                {
-                  icon: EditIcon,
-                  tooltip: 'Edit Item',
-                  onClick: (e, rowData) => {
-                    history.push(`/edit/${rowData.id}`);
-                  },
-                },
-              ]}
-            />
+            <Switch>
+              <Route path="/main">
+                <Table
+                  column={columns}
+                  data={data}
+                  nameOfTable={nameOfTable}
+                  deleteRow={deleteRow}
+                />
+              </Route>
+              <Route path="/new-actor">
+                <NewItem />
+              </Route>
+              <Route path="/edit-actor/:id">
+                <NewItem />
+              </Route>
+            </Switch>
           </Container>
         </BoxComponent>
       </Box>

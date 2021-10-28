@@ -40,9 +40,12 @@ const NewItem = () => {
   React.useEffect(() => {
     if (id !== undefined) {
       api.loadOneActor(id).then((result) => {
+        let date = new Date(result.dob);
+        let day =
+          date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`;
         setInitialValue({
           name: result.name,
-          dob: '',
+          dob: `${date.getFullYear()}-${date.getMonth() + 1}-${day}`,
           sex: result.sex,
           photoUrl: result.photoUrl,
         });

@@ -14,13 +14,13 @@ api.load = function (data, history) {
           'Content-Type': 'application/json',
         },
       });
-      const json = await response.json();
+      await response.json();
       if (response.ok && data.username === 'admin') {
         history.push('/main');
       } else {
         alert('You sre not admin');
       }
-      console.log('Успех:', JSON.stringify(json));
+      console.log('Успех:');
     } catch (error) {
       console.error('Ошибка:', error);
     }
