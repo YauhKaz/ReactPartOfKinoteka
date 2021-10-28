@@ -17,6 +17,9 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems } from '../components/listItems';
 import MaterialTable from '@material-table/core';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import LayoutContext from '../store/layout-context';
 import styled, { ThemeProvider } from 'styled-components';
 import { tableIcons } from '../components/TableIcons';
@@ -125,6 +128,7 @@ function DashboardContent() {
     setOpen(!open);
   };
 
+  //Move to API
   async function dataLoadingFetch(url) {
     try {
       const response = await fetch(url);
@@ -150,7 +154,8 @@ function DashboardContent() {
   };
 
   const deleteRow = (id) => {
-    api.deleteActor(id);
+    let nameOfTable = localStorage.getItem('currentTable');
+    api.deleteItem(id, nameOfTable);
   };
 
   return (
@@ -260,23 +265,23 @@ function DashboardContent() {
               }
               actions={[
                 {
-                  icon: 'add',
-                  tooltip: 'Add icon',
+                  icon: AddIcon,
+                  tooltip: 'Add Item',
                   isFreeAction: true,
                   onClick: () => {
                     history.push('/new');
                   },
                 },
                 {
-                  icon: 'delete',
-                  tooltip: 'Delete Actor',
+                  icon: DeleteIcon,
+                  tooltip: 'Delete Item',
                   onClick: (e, rowData) => {
                     deleteRow(rowData.id);
                   },
                 },
                 {
-                  icon: 'edit',
-                  tooltip: 'Edit Actor',
+                  icon: EditIcon,
+                  tooltip: 'Edit Item',
                   onClick: (e, rowData) => {
                     history.push(`/edit/${rowData.id}`);
                   },

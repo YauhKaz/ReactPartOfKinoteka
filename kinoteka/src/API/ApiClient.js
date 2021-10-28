@@ -94,22 +94,22 @@ api.loadOneActor = function (id) {
   return loadOneActor();
 };
 
-api.deleteActor = function (id) {
-  const url = 'http://localhost:3000/actors/' + id;
+api.deleteItem = function (id, table) {
+  const url = `http://localhost:3000/${table}/${id}`;
 
-  async function deleteActor() {
+  async function deleteItem() {
     try {
       const response = await fetch(url, {
         method: 'DELETE',
       });
       if (response.ok) {
-        alert('You delete actor');
+        alert('You delete item');
       } else {
-        alert('You do not delete actor');
+        alert('You do not delete item');
       }
     } catch (error) {
       console.error('Ошибка:', error);
     }
   }
-  deleteActor();
+  deleteItem();
 };
