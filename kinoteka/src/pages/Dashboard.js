@@ -111,14 +111,6 @@ function DashboardContent() {
     layoutContext.toggle(layoutContext.mode);
   }
 
-  React.useEffect(() => {
-    let curentTable =
-      localStorage.getItem('currentTable') === null
-        ? 'movies'
-        : localStorage.getItem('currentTable');
-    dataLoadingFetch(`http://localhost:3000/${curentTable}`);
-  }, []);
-
   const history = useHistory();
 
   const [open, setOpen] = React.useState(true);
@@ -127,6 +119,15 @@ function DashboardContent() {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  let curentTable =
+    localStorage.getItem('currentTable') === null
+      ? 'movies'
+      : localStorage.getItem('currentTable');
+
+  React.useEffect(() => {
+    dataLoadingFetch(`http://localhost:3000/${curentTable}`);
+  }, [data]);
 
   //Move to API
   async function dataLoadingFetch(url) {
@@ -260,8 +261,7 @@ function DashboardContent() {
               columns={columns}
               data={data}
               title={
-                localStorage.getItem('currentTable').charAt(0).toUpperCase() +
-                localStorage.getItem('currentTable').substr(1)
+                curentTable.charAt(0).toUpperCase() + curentTable.substr(1)
               }
               actions={[
                 {
