@@ -40,13 +40,13 @@ api.loadNewActor = function (data, history) {
           'Content-Type': 'application/json',
         },
       });
-      const json = await response.json();
+      await response.json();
       if (response.ok) {
         history.push('/actors');
       } else {
         alert('You are not admin');
       }
-      console.log('Успех:', JSON.stringify(json));
+      console.log('Успех:');
     } catch (error) {
       console.error('Ошибка:', error);
     }

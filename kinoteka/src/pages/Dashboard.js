@@ -117,7 +117,6 @@ function DashboardContent() {
   const [data, setData] = useState([]);
   const [nameOfTable, setNameOfTable] = useState('Movies');
   const [columns, setColumns] = useState([]);
-  const [update, setUpdate] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -127,10 +126,15 @@ function DashboardContent() {
     dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      console.log('123');
+    }
+  }, [data]);
+
   // Move to API
   async function dataLoadingFetch(urlEnd, history) {
     try {
-      console.log(1);
       const url = `http://localhost:3000/${urlEnd}`;
       const response = await fetch(url);
       const json = await response.json();
@@ -152,7 +156,6 @@ function DashboardContent() {
     let urlEnd = e.target.outerText.toLowerCase();
     setNameOfTable(e.target.outerText);
     dataLoadingFetch(urlEnd, history);
-    setUpdate(!update);
   };
 
   const deleteRow = (id) => {
