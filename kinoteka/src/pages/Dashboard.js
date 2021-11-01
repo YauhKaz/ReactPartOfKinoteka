@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { useContext } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -111,28 +112,27 @@ function DashboardContent() {
   }
 
   const history = useHistory();
-  let obj = useLocation();
 
-  const [open, setOpen] = React.useState(true);
-  const [data, setData] = React.useState([]);
-  const [nameOfTable, setNameOfTable] = React.useState('Movies');
-  const [columns, setColumns] = React.useState([]);
+  const [open, setOpen] = useState(true);
+  const [data, setData] = useState([]);
+  const [nameOfTable, setNameOfTable] = useState('Movies');
+  const [columns, setColumns] = useState([]);
+  const [update, setUpdate] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  React.useEffect(() => {
-    dataLoadingFetch(`http://localhost:3000/${nameOfTable}`, history, obj);
+  useEffect(() => {
+    console.log('effect');
+    dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
   }, []);
 
-  // React.useEffect(() => {
-  //   dataLoadingFetch(`http://localhost:3000/${nameOfTable}`, history, obj);
-  // }, [data]);
-
   // Move to API
-  async function dataLoadingFetch(url) {
+  async function dataLoadingFetch(urlEnd, history) {
     try {
-      const response = await fetch(url, history, obj);
+      console.log(1);
+      const url = `http://localhost:3000/${urlEnd}`;
+      const response = await fetch(url);
       const json = await response.json();
       let columnsArray = [];
       for (let key in json[0]) {
@@ -142,7 +142,7 @@ function DashboardContent() {
       }
       setColumns(columnsArray);
       setData(json);
-      if (obj.pathname !== '/main') history.push('/main');
+      history.push(`/${urlEnd}`);
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -151,8 +151,8 @@ function DashboardContent() {
   const loadingTable = (e) => {
     let urlEnd = e.target.outerText.toLowerCase();
     setNameOfTable(e.target.outerText);
-    const url = `http://localhost:3000/${urlEnd}`;
-    dataLoadingFetch(url, history, obj);
+    dataLoadingFetch(urlEnd, history);
+    setUpdate(!update);
   };
 
   const deleteRow = (id) => {
@@ -243,18 +243,42 @@ function DashboardContent() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {/* Table */}
             <Switch>
-              <Route path="/main">
+              <Route path="/movies" exact>
                 <Table
                   column={columns}
                   data={data}
-                  nameOfTable={nameOfTable}
+                  nameOfTable={'Movies'}
                   deleteRow={deleteRow}
                 />
               </Route>
-              <Route path="/new-actor">
+              <Route path="/images" exact>
+                <Table
+                  column={columns}
+                  data={data}
+                  nameOfTable={'Images'}
+                  deleteRow={deleteRow}
+                />
+              </Route>
+              <Route path="/categories" exact>
+                <Table
+                  column={columns}
+                  data={data}
+                  nameOfTable={'Categories'}
+                  deleteRow={deleteRow}
+                />
+              </Route>
+              <Route path="/actors" exact>
+                <Table
+                  column={columns}
+                  data={data}
+                  nameOfTable={'Actors'}
+                  deleteRow={deleteRow}
+                />
+              </Route>
+              <Route path="/actors/new">
                 <NewItem />
               </Route>
-              <Route path="/edit-actor/:id">
+              <Route path="/actors/:id">
                 <NewItem />
               </Route>
             </Switch>

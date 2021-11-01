@@ -16,7 +16,7 @@ api.load = function (data, history) {
       });
       await response.json();
       if (response.ok && data.username === 'admin') {
-        history.push('/main');
+        history.push('/movies');
       } else {
         alert('You sre not admin');
       }
@@ -42,7 +42,7 @@ api.loadNewActor = function (data, history) {
       });
       const json = await response.json();
       if (response.ok) {
-        history.push('/main');
+        history.push('/actors');
       } else {
         alert('You are not admin');
       }
@@ -68,7 +68,7 @@ api.loadUpdateActor = function (id, data, history) {
       });
       const json = await response.json();
       if (response.ok) {
-        history.push('/main');
+        history.push('/actors');
       } else {
         alert('You are not upload actor');
       }

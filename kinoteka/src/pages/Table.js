@@ -40,7 +40,7 @@ export default function Table(props) {
             tooltip: 'Add Item',
             isFreeAction: true,
             onClick: () => {
-              history.push('/new-actor');
+              history.push('/actors/new');
             },
           },
           {
@@ -54,12 +54,11 @@ export default function Table(props) {
             icon: EditIcon,
             tooltip: 'Edit Item',
             onClick: (e, rowData) => {
-              history.push(`/edit-actor/${rowData.id}`);
+              history.push(`/actors/${rowData.id}`);
             },
           },
         ]}
       />
-      ;
     </>
   );
 }

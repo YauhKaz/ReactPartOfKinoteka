@@ -11,13 +11,22 @@ function App() {
         <Route path="/" exact>
           <SignInSide />
         </Route>
-        <Route path="/main">
+        <Route path="/movies">
           <Dashboard />
         </Route>
-        <Route path="/new-actor">
+        <Route path="/images">
           <Dashboard />
         </Route>
-        <Route path="/edit-actor/:id">
+        <Route path="/categories">
+          <Dashboard />
+        </Route>
+        <Route path="/actors">
+          <Dashboard />
+        </Route>
+        <Route path="/actors/new">
+          <Dashboard />
+        </Route>
+        <Route path="/actors/:id">
           <Dashboard />
         </Route>
       </Switch>
