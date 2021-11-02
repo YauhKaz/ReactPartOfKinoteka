@@ -28,6 +28,24 @@ api.load = function (data, history) {
   userLoginFetch();
 };
 
+api.loadAllItems = function (url) {
+  async function loadAllItems() {
+    try {
+      const response = await fetch(url);
+      const json = await response.json();
+      if (response.ok) {
+        return json;
+      } else {
+        alert('You are not admin');
+      }
+      console.log('Успех:');
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+  return loadAllItems();
+};
+
 api.loadNewActor = function (data, history) {
   const url = 'http://localhost:3000/actors';
 
@@ -72,7 +90,7 @@ api.loadUpdateActor = function (id, data, history) {
       } else {
         alert('You are not upload actor');
       }
-      console.log('Успех:', JSON.stringify(json));
+      return json;
     } catch (error) {
       console.error('Ошибка:', error);
     }
@@ -107,6 +125,7 @@ api.deleteItem = function (id, table) {
       } else {
         alert('You do not delete item');
       }
+      return response;
     } catch (error) {
       console.error('Ошибка:', error);
     }

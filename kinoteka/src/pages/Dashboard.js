@@ -122,44 +122,49 @@ function DashboardContent() {
   };
 
   useEffect(() => {
-    console.log('effect');
-    dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
+    loadingData('movies');
+    // dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      console.log('123');
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   console.log('data');
+  //   loadingData(`${nameOfTable}`);
+  //   // dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
+  // }, [data]);
 
-  // Move to API
-  async function dataLoadingFetch(urlEnd, history) {
-    try {
-      const url = `http://localhost:3000/${urlEnd}`;
-      const response = await fetch(url);
-      const json = await response.json();
+  const loadingTable = (e) => {
+    let urlEnd = e.target.outerText.toLowerCase();
+    setNameOfTable(e.target.outerText);
+    loadingData(urlEnd);
+  };
+
+  const loadingData = (urlEnd) => {
+    api.loadAllItems(`http://localhost:3000/${urlEnd}`).then((result) => {
       let columnsArray = [];
-      for (let key in json[0]) {
+      for (let key in result[0]) {
         if (key !== 'images' && key !== 'actors' && key !== 'categories') {
           columnsArray.push({ title: `${key}`, field: `${key}` });
         }
       }
       setColumns(columnsArray);
-      setData(json);
+      setData(result);
       history.push(`/${urlEnd}`);
-    } catch (error) {
-      console.error('Ошибка:', error);
-    }
-  }
-
-  const loadingTable = (e) => {
-    let urlEnd = e.target.outerText.toLowerCase();
-    setNameOfTable(e.target.outerText);
-    dataLoadingFetch(urlEnd, history);
+    });
   };
 
-  const deleteRow = (id) => {
-    api.deleteItem(id, nameOfTable);
+  async function deleteRow(id) {
+    await api.deleteItem(id, nameOfTable);
+    await loadingData(`${nameOfTable.toLowerCase()}`);
+  }
+
+  const loadRow = () => {
+    history.push('/actors/new');
+    // api.deleteItem(id, nameOfTable);
+  };
+
+  const editRow = (id) => {
+    history.push(`/actors/${id}`);
+    // api.deleteItem(id, nameOfTable);
   };
 
   return (
@@ -276,6 +281,8 @@ function DashboardContent() {
                   data={data}
                   nameOfTable={'Actors'}
                   deleteRow={deleteRow}
+                  loadRow={loadRow}
+                  editRow={editRow}
                 />
               </Route>
               <Route path="/actors/new">

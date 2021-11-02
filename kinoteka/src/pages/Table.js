@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import MaterialTable from '@material-table/core';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,7 +10,6 @@ import LayoutContext from '../store/layout-context';
 export default function Table(props) {
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
-  const history = useHistory();
 
   return (
     <>
@@ -40,7 +38,7 @@ export default function Table(props) {
             tooltip: 'Add Item',
             isFreeAction: true,
             onClick: () => {
-              history.push('/actors/new');
+              props.loadRow();
             },
           },
           {
@@ -54,7 +52,7 @@ export default function Table(props) {
             icon: EditIcon,
             tooltip: 'Edit Item',
             onClick: (e, rowData) => {
-              history.push(`/actors/${rowData.id}`);
+              props.editRow(rowData.id);
             },
           },
         ]}

@@ -101,7 +101,10 @@ const NewItem = () => {
               photoUrl: values.photoUrl,
             });
             if (id === undefined) api.loadNewActor(tempNewItem[0], history);
-            else api.loadUpdateActor(id, tempNewItem[0], history);
+            else {
+              let x = api.loadUpdateActor(id, tempNewItem[0], history);
+              x.then((y) => console.log(y));
+            }
           }}
         >
           {({
