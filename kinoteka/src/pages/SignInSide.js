@@ -14,7 +14,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import LayoutContext from '../store/layout-context';
 import { useHistory } from 'react-router-dom';
-import api from '../API/ApiClient';
+import { Api } from '../API/ApiClient';
 import styled, { ThemeProvider } from 'styled-components';
 
 function Copyright(props) {
@@ -122,7 +122,7 @@ export default function SignInSide() {
       username: data.get('username'),
       password: data.get('password'),
     };
-    api.load(userData, history);
+    new Api().load(userData, history);
   };
 
   return (

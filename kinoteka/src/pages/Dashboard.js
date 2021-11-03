@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
+import CircularProgress from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -23,7 +24,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import Table from './Table';
 import NewItem from './NewItem';
 import { Route, Switch } from 'react-router-dom';
-import api from '../API/ApiClient';
+import { Api } from '../API/ApiClient';
 
 const drawerWidth = 240;
 
@@ -122,6 +123,7 @@ function DashboardContent() {
   };
 
   useEffect(() => {
+    console.log(process.env.REACT_APP_SECRET_NAME);
     loadingData('movies');
   }, []);
 
@@ -132,7 +134,7 @@ function DashboardContent() {
   };
 
   const loadingData = (urlEnd) => {
-    api.loadAllItems(`http://localhost:3000/${urlEnd}`).then((result) => {
+    new Api().loadAllItems(`http://localhost:3000/${urlEnd}`).then((result) => {
       let columnsArray = [];
       for (let key in result[0]) {
         if (key !== 'images' && key !== 'actors' && key !== 'categories') {
@@ -146,21 +148,23 @@ function DashboardContent() {
   };
 
   const deleteRow = (id) => {
-    api.deleteItem(id, nameOfTable).then((response) => {
+    const url = `http://localhost:3000/${nameOfTable}/${id}`;
+    new Api().deleteItem(url).then((response) => {
       if (response.ok) loadingData(`${nameOfTable.toLowerCase()}`);
     });
   };
 
   const loadNew = () => {
-    history.push('/actors/new');
+    history.push(`/${nameOfTable.toLowerCase()}/new`);
   };
 
   const loadEdit = (id) => {
-    history.push(`/actors/${id}`);
+    history.push(`/${nameOfTable.toLowerCase()}/${id}`);
   };
 
   const loadRow = (tempNewItem) => {
-    api.loadNewActor(tempNewItem).then((response) => {
+    let url = 'http://localhost:3000/actors/';
+    new Api().loadNewActor(url, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
         history.push('/actors');
@@ -171,7 +175,8 @@ function DashboardContent() {
   };
 
   const editRow = (id, tempNewItem) => {
-    api.loadUpdateActor(id, tempNewItem).then((response) => {
+    let url = 'http://localhost:3000/actors/' + id;
+    new Api().loadUpdateActor(url, id, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
         history.push('/actors');
@@ -265,45 +270,26 @@ function DashboardContent() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {/* Table */}
             <Switch>
-              <Route path="/movies" exact>
+              <Route path={`/${nameOfTable.toLowerCase()}`} exact>
                 <Table
                   column={columns}
                   data={data}
-                  nameOfTable={'Movies'}
-                  deleteRow={deleteRow}
-                />
-              </Route>
-              <Route path="/images" exact>
-                <Table
-                  column={columns}
-                  data={data}
-                  nameOfTable={'Images'}
-                  deleteRow={deleteRow}
-                />
-              </Route>
-              <Route path="/categories" exact>
-                <Table
-                  column={columns}
-                  data={data}
-                  nameOfTable={'Categories'}
-                  deleteRow={deleteRow}
-                />
-              </Route>
-              <Route path="/actors" exact>
-                <Table
-                  column={columns}
-                  data={data}
-                  nameOfTable={'Actors'}
+                  nameOfTable={nameOfTable}
                   deleteRow={deleteRow}
                   loadNew={loadNew}
                   loadEdit={loadEdit}
                 />
               </Route>
-              <Route path="/actors/new">
+              <Route path={`/${nameOfTable.toLowerCase()}/new`}>
                 <NewItem loadRow={loadRow} />
               </Route>
-              <Route path="/actors/:id">
+              <Route path={`/${nameOfTable.toLowerCase()}/:id`}>
                 <NewItem editRow={editRow} />
+              </Route>
+              <Route>
+                <>
+                  <CircularProgress color="success" />
+                </>
               </Route>
             </Switch>
           </Container>

@@ -1,22 +1,18 @@
-export default function api(data) {
-  console.log(data);
-}
+export class Api {
+  url = 'http://localhost:3000/auth/login';
 
-api.load = function (data, history) {
-  const url = 'http://localhost:3000/auth/login';
-
-  async function userLoginFetch() {
+  async load(data, history) {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(this.url, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      await response.json();
       if (response.ok && data.username === 'admin') {
-        history.push('/movies');
+        history.push('/movie');
+        return await response.json();
       } else {
         alert('You sre not admin');
       }
@@ -25,11 +21,8 @@ api.load = function (data, history) {
       console.error('Ошибка:', error);
     }
   }
-  userLoginFetch();
-};
 
-api.loadAllItems = function (url) {
-  async function loadAllItems() {
+  async loadAllItems(url) {
     try {
       const response = await fetch(url);
       const json = await response.json();
@@ -43,13 +36,8 @@ api.loadAllItems = function (url) {
       console.error('Ошибка:', error);
     }
   }
-  return loadAllItems();
-};
 
-api.loadNewActor = function (data) {
-  const url = 'http://localhost:3000/actors';
-
-  async function loadNewActor() {
+  async loadNewActor(url, data) {
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -65,13 +53,8 @@ api.loadNewActor = function (data) {
       console.error('Ошибка:', error);
     }
   }
-  return loadNewActor();
-};
 
-api.loadUpdateActor = function (id, data) {
-  const url = 'http://localhost:3000/actors/' + id;
-
-  async function loadUpdateActor() {
+  async loadUpdateActor(url, id, data) {
     try {
       const response = await fetch(url, {
         method: 'PUT',
@@ -90,12 +73,8 @@ api.loadUpdateActor = function (id, data) {
       console.error('Ошибка:', error);
     }
   }
-  return loadUpdateActor();
-};
 
-api.loadOneActor = function (id) {
-  const url = 'http://localhost:3000/actors/' + id;
-  async function loadOneActor() {
+  async loadOneActor(url) {
     try {
       const response = await fetch(url);
       const json = await response.json();
@@ -104,13 +83,8 @@ api.loadOneActor = function (id) {
       console.error('Ошибка:', error);
     }
   }
-  return loadOneActor();
-};
 
-api.deleteItem = function (id, table) {
-  const url = `http://localhost:3000/${table}/${id}`;
-
-  async function deleteItem() {
+  async deleteItem(url) {
     try {
       const response = await fetch(url, {
         method: 'DELETE',
@@ -126,5 +100,4 @@ api.deleteItem = function (id, table) {
       console.error('Ошибка:', error);
     }
   }
-  return deleteItem();
-};
+}

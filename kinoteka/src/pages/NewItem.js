@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import LayoutContext from '../store/layout-context';
-import api from '../API/ApiClient';
+import { Api } from '../API/ApiClient';
 
 const Section = styled.section`
   display: flex;
@@ -37,7 +37,8 @@ const NewItem = (props) => {
   });
   React.useEffect(() => {
     if (id !== undefined) {
-      api.loadOneActor(id).then((result) => {
+      const url = 'http://localhost:3000/actors/' + id;
+      new Api().loadOneActor(url).then((result) => {
         let date = new Date(result.dob);
         let day =
           date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`;
