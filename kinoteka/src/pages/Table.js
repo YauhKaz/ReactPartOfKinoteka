@@ -38,7 +38,7 @@ export default function Table(props) {
             tooltip: 'Add Item',
             isFreeAction: true,
             onClick: () => {
-              props.loadRow();
+              props.loadNew();
             },
           },
           {
@@ -52,7 +52,7 @@ export default function Table(props) {
             icon: EditIcon,
             tooltip: 'Edit Item',
             onClick: (e, rowData) => {
-              props.editRow(rowData.id);
+              props.loadEdit(rowData.id);
             },
           },
         ]}

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
@@ -25,8 +24,7 @@ const Div = styled.div`
   width: 40%;
 `;
 
-const NewItem = () => {
-  const history = useHistory();
+const NewItem = (props) => {
   let tempNewItem;
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
@@ -100,11 +98,8 @@ const NewItem = () => {
               sex: values.sex,
               photoUrl: values.photoUrl,
             });
-            if (id === undefined) api.loadNewActor(tempNewItem[0], history);
-            else {
-              let x = api.loadUpdateActor(id, tempNewItem[0], history);
-              x.then((y) => console.log(y));
-            }
+            if (id === undefined) props.loadRow(tempNewItem[0]);
+            else props.editRow(id, tempNewItem[0]);
           }}
         >
           {({

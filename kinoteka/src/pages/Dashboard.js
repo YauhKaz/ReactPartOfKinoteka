@@ -123,14 +123,7 @@ function DashboardContent() {
 
   useEffect(() => {
     loadingData('movies');
-    // dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
   }, []);
-
-  // useEffect(() => {
-  //   console.log('data');
-  //   loadingData(`${nameOfTable}`);
-  //   // dataLoadingFetch(`${nameOfTable.toLowerCase()}`, history);
-  // }, [data]);
 
   const loadingTable = (e) => {
     let urlEnd = e.target.outerText.toLowerCase();
@@ -152,19 +145,40 @@ function DashboardContent() {
     });
   };
 
-  async function deleteRow(id) {
-    await api.deleteItem(id, nameOfTable);
-    await loadingData(`${nameOfTable.toLowerCase()}`);
-  }
-
-  const loadRow = () => {
-    history.push('/actors/new');
-    // api.deleteItem(id, nameOfTable);
+  const deleteRow = (id) => {
+    api.deleteItem(id, nameOfTable).then((response) => {
+      if (response.ok) loadingData(`${nameOfTable.toLowerCase()}`);
+    });
   };
 
-  const editRow = (id) => {
+  const loadNew = () => {
+    history.push('/actors/new');
+  };
+
+  const loadEdit = (id) => {
     history.push(`/actors/${id}`);
-    // api.deleteItem(id, nameOfTable);
+  };
+
+  const loadRow = (tempNewItem) => {
+    api.loadNewActor(tempNewItem).then((response) => {
+      if (response.ok) {
+        loadingData(`${nameOfTable.toLowerCase()}`);
+        history.push('/actors');
+      } else {
+        alert('You are not admin');
+      }
+    });
+  };
+
+  const editRow = (id, tempNewItem) => {
+    api.loadUpdateActor(id, tempNewItem).then((response) => {
+      if (response.ok) {
+        loadingData(`${nameOfTable.toLowerCase()}`);
+        history.push('/actors');
+      } else {
+        alert('You are not admin');
+      }
+    });
   };
 
   return (
@@ -281,15 +295,15 @@ function DashboardContent() {
                   data={data}
                   nameOfTable={'Actors'}
                   deleteRow={deleteRow}
-                  loadRow={loadRow}
-                  editRow={editRow}
+                  loadNew={loadNew}
+                  loadEdit={loadEdit}
                 />
               </Route>
               <Route path="/actors/new">
-                <NewItem />
+                <NewItem loadRow={loadRow} />
               </Route>
               <Route path="/actors/:id">
-                <NewItem />
+                <NewItem editRow={editRow} />
               </Route>
             </Switch>
           </Container>

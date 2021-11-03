@@ -46,7 +46,7 @@ api.loadAllItems = function (url) {
   return loadAllItems();
 };
 
-api.loadNewActor = function (data, history) {
+api.loadNewActor = function (data) {
   const url = 'http://localhost:3000/actors';
 
   async function loadNewActor() {
@@ -58,21 +58,17 @@ api.loadNewActor = function (data, history) {
           'Content-Type': 'application/json',
         },
       });
-      await response.json();
       if (response.ok) {
-        history.push('/actors');
-      } else {
-        alert('You are not admin');
+        return response;
       }
-      console.log('Успех:');
     } catch (error) {
       console.error('Ошибка:', error);
     }
   }
-  loadNewActor();
+  return loadNewActor();
 };
 
-api.loadUpdateActor = function (id, data, history) {
+api.loadUpdateActor = function (id, data) {
   const url = 'http://localhost:3000/actors/' + id;
 
   async function loadUpdateActor() {
@@ -84,18 +80,17 @@ api.loadUpdateActor = function (id, data, history) {
           'Content-Type': 'application/json',
         },
       });
-      const json = await response.json();
+      await response.json();
       if (response.ok) {
-        history.push('/actors');
+        return response;
       } else {
         alert('You are not upload actor');
       }
-      return json;
     } catch (error) {
       console.error('Ошибка:', error);
     }
   }
-  loadUpdateActor();
+  return loadUpdateActor();
 };
 
 api.loadOneActor = function (id) {
@@ -122,6 +117,7 @@ api.deleteItem = function (id, table) {
       });
       if (response.ok) {
         alert('You delete item');
+        return response;
       } else {
         alert('You do not delete item');
       }
@@ -130,5 +126,5 @@ api.deleteItem = function (id, table) {
       console.error('Ошибка:', error);
     }
   }
-  deleteItem();
+  return deleteItem();
 };
