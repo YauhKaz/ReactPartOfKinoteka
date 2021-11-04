@@ -1,22 +1,15 @@
 export class Api {
   url = 'http://localhost:3000/auth/login';
 
-  async load(data, history) {
+  async load(data) {
     try {
-      const response = await fetch(this.url, {
+      return await fetch(this.url, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      if (response.ok && data.username === 'admin') {
-        history.push('/movie');
-        return await response.json();
-      } else {
-        alert('You sre not admin');
-      }
-      console.log('Успех:');
     } catch (error) {
       console.error('Ошибка:', error);
     }

@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import LayoutContext from '../store/layout-context';
+import AuthContext from '../store/auth-context';
 import { useHistory } from 'react-router-dom';
 import { Api } from '../API/ApiClient';
 import styled, { ThemeProvider } from 'styled-components';
@@ -111,6 +112,7 @@ export default function SignInSide() {
   const layoutContext = useContext(LayoutContext);
   const history = useHistory();
   let theme = layoutContext.theme;
+  const { isAdmin, setIsAdmin } = useContext(AuthContext);
 
   function toggleTheme() {
     layoutContext.toggle(layoutContext.mode);
@@ -122,7 +124,16 @@ export default function SignInSide() {
       username: data.get('username'),
       password: data.get('password'),
     };
-    new Api().load(userData, history);
+    new Api().load(userData).then((response) => {
+      if (response.ok && userData.username === 'admin') {
+        setIsAdmin(true);
+        console.log(isAdmin);
+        history.push('/movie');
+      } else {
+        history.push('/');
+        alert('you have not access');
+      }
+    });
   };
 
   return (
