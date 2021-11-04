@@ -25,6 +25,7 @@ const Div = styled.div`
 `;
 
 const NewItem = (props) => {
+  const URL = process.env.REACT_APP_URL;
   let tempNewItem;
   const layoutContext = useContext(LayoutContext);
   let theme = layoutContext.theme;
@@ -37,7 +38,7 @@ const NewItem = (props) => {
   });
   React.useEffect(() => {
     if (id !== undefined) {
-      const url = 'http://localhost:3000/actors/' + id;
+      const url = `${URL}/actors/` + id;
       new Api().loadOneActor(url).then((result) => {
         let date = new Date(result.dob);
         let day =

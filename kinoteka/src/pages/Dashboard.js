@@ -114,6 +114,8 @@ function DashboardContent() {
 
   const history = useHistory();
 
+  const URL = process.env.REACT_APP_URL;
+
   const [open, setOpen] = useState(true);
   const [data, setData] = useState([]);
   const [nameOfTable, setNameOfTable] = useState('Movies');
@@ -123,7 +125,6 @@ function DashboardContent() {
   };
 
   useEffect(() => {
-    console.log(process.env.REACT_APP_SECRET_NAME);
     loadingData('movies');
   }, []);
 
@@ -134,7 +135,7 @@ function DashboardContent() {
   };
 
   const loadingData = (urlEnd) => {
-    new Api().loadAllItems(`http://localhost:3000/${urlEnd}`).then((result) => {
+    new Api().loadAllItems(`${URL}/${urlEnd}`).then((result) => {
       let columnsArray = [];
       for (let key in result[0]) {
         if (key !== 'images' && key !== 'actors' && key !== 'categories') {
@@ -148,7 +149,7 @@ function DashboardContent() {
   };
 
   const deleteRow = (id) => {
-    const url = `http://localhost:3000/${nameOfTable}/${id}`;
+    const url = `${URL}/${nameOfTable}/${id}`;
     new Api().deleteItem(url).then((response) => {
       if (response.ok) loadingData(`${nameOfTable.toLowerCase()}`);
     });
@@ -163,7 +164,7 @@ function DashboardContent() {
   };
 
   const loadRow = (tempNewItem) => {
-    let url = 'http://localhost:3000/actors/';
+    let url = `${URL}/actors/`;
     new Api().loadNewActor(url, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
@@ -175,7 +176,7 @@ function DashboardContent() {
   };
 
   const editRow = (id, tempNewItem) => {
-    let url = 'http://localhost:3000/actors/' + id;
+    let url = `${URL}/actors/` + id;
     new Api().loadUpdateActor(url, id, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);

@@ -1,5 +1,7 @@
+const temp = process.env.REACT_APP_URL;
+
 export class Api {
-  url = 'http://localhost:3000/auth/login';
+  url = `${temp}/auth/login`;
 
   async load(data) {
     try {
