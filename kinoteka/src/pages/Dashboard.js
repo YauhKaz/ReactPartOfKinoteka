@@ -23,6 +23,7 @@ import LayoutContext from '../store/layout-context';
 import styled, { ThemeProvider } from 'styled-components';
 import Table from './Table';
 import NewItem from './NewItem';
+import NewImage from './NewImage';
 import { Route, Switch } from 'react-router-dom';
 import { Api } from '../API/ApiClient';
 
@@ -164,7 +165,7 @@ function DashboardContent() {
   };
 
   const loadRow = (tempNewItem) => {
-    const url = `${URL}/actors/`;
+    const url = `${URL}/${nameOfTable.toLowerCase()}/`;
     new Api().loadNewActor(url, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
@@ -176,7 +177,7 @@ function DashboardContent() {
   };
 
   const editRow = (id, tempNewItem) => {
-    const url = `${URL}/actors/` + id;
+    const url = `${URL}/${nameOfTable.toLowerCase()}/` + id;
     new Api().loadUpdateActor(url, id, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
@@ -282,10 +283,12 @@ function DashboardContent() {
                 />
               </Route>
               <Route path={`/${nameOfTable.toLowerCase()}/new`}>
-                <NewItem loadRow={loadRow} />
+                {nameOfTable === 'Actors' && <NewItem loadRow={loadRow} />}
+                {nameOfTable === 'Images' && <NewImage loadRow={loadRow} />}
               </Route>
               <Route path={`/${nameOfTable.toLowerCase()}/:id`}>
-                <NewItem editRow={editRow} />
+                {nameOfTable === 'Actors' && <NewItem editRow={editRow} />}
+                {nameOfTable === 'Images' && <NewImage editRow={editRow} />}
               </Route>
               <Route>
                 <>
