@@ -1,11 +1,38 @@
-export default function api(data) {
-  console.log(data);
-}
+const temp = process.env.REACT_APP_URL;
 
-api.load = function (data, history) {
-  const url = 'http://localhost:3000/auth/login';
+export class Api {
+  url = `${temp}/auth/login`;
 
-  async function userLoginFetch() {
+  async load(data) {
+    try {
+      return await fetch(this.url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+
+  async loadAllItems(url) {
+    try {
+      const response = await fetch(url);
+      const json = await response.json();
+      if (response.ok) {
+        return json;
+      } else {
+        alert('You are not admin');
+      }
+      console.log('Успех:');
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+
+  async loadNewActor(url, data) {
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -14,16 +41,58 @@ api.load = function (data, history) {
           'Content-Type': 'application/json',
         },
       });
-      const json = await response.json();
-      if (response.ok && data.username === 'admin') {
-        history.push('/main');
-      } else {
-        alert('You sre not admin');
+      if (response.ok) {
+        return response;
       }
-      console.log('Успех:', JSON.stringify(json));
     } catch (error) {
       console.error('Ошибка:', error);
     }
   }
-  userLoginFetch();
-};
+
+  async loadUpdateActor(url, id, data) {
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      await response.json();
+      if (response.ok) {
+        return response;
+      } else {
+        alert('You are not upload actor');
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+
+  async loadOneActor(url) {
+    try {
+      const response = await fetch(url);
+      const json = await response.json();
+      return json;
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+
+  async deleteItem(url) {
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert('You delete item');
+        return response;
+      } else {
+        alert('You do not delete item');
+      }
+      return response;
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+}

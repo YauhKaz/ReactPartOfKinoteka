@@ -1,6 +1,10 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
+import CircularProgress from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -14,11 +18,13 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems } from '../components/listItems';
-import MaterialTable from '@material-table/core';
+import MainListItems from '../components/listItems';
 import LayoutContext from '../store/layout-context';
 import styled, { ThemeProvider } from 'styled-components';
-import { tableIcons } from '../components/TableIcons';
+import Table from './Table';
+import NewItem from './NewItem';
+import { Route, Switch } from 'react-router-dom';
+import { Api } from '../API/ApiClient';
 
 const drawerWidth = 240;
 
@@ -101,39 +107,84 @@ const Drawer = styled(MuiDrawer, {
 
 function DashboardContent() {
   const layoutContext = useContext(LayoutContext);
-  let theme = layoutContext.theme;
+  const { theme } = layoutContext;
   function toggleTheme() {
     layoutContext.toggle(layoutContext.mode);
   }
 
-  const [open, setOpen] = React.useState(true);
-  const [data, setData] = React.useState([]);
-  const [columns, setColumns] = React.useState([]);
+  const history = useHistory();
+
+  const URL = process.env.REACT_APP_URL;
+
+  const [open, setOpen] = useState(true);
+  const [data, setData] = useState([]);
+  const [nameOfTable, setNameOfTable] = useState('Movies');
+  const [columns, setColumns] = useState([]);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  async function dataLoadingFetch(url) {
-    try {
-      const response = await fetch(url);
-      const json = await response.json();
+  useEffect(() => {
+    loadingData('movies');
+  }, []);
+
+  const loadingTable = (e) => {
+    const urlEnd = e.target.outerText.toLowerCase();
+    setNameOfTable(e.target.outerText);
+    loadingData(urlEnd);
+  };
+
+  const loadingData = (urlEnd) => {
+    new Api().loadAllItems(`${URL}/${urlEnd}`).then((result) => {
       let columnsArray = [];
-      for (let key in json[0]) {
+      for (let key in result[0]) {
         if (key !== 'images' && key !== 'actors' && key !== 'categories') {
           columnsArray.push({ title: `${key}`, field: `${key}` });
         }
       }
       setColumns(columnsArray);
-      setData(json);
-    } catch (error) {
-      console.error('Ошибка:', error);
-    }
-  }
+      setData(result);
+      history.push(`/${urlEnd}`);
+    });
+  };
 
-  const loadingTable = (e) => {
-    let urlEnd = e.target.outerText.toLowerCase();
-    const url = `http://localhost:3000/${urlEnd}`;
-    dataLoadingFetch(url);
+  const deleteRow = (id) => {
+    const url = `${URL}/${nameOfTable}/${id}`;
+    new Api().deleteItem(url).then((response) => {
+      if (response.ok) loadingData(`${nameOfTable.toLowerCase()}`);
+    });
+  };
+
+  const loadNew = () => {
+    history.push(`/${nameOfTable.toLowerCase()}/new`);
+  };
+
+  const loadEdit = (id) => {
+    history.push(`/${nameOfTable.toLowerCase()}/${id}`);
+  };
+
+  const loadRow = (tempNewItem) => {
+    const url = `${URL}/actors/`;
+    new Api().loadNewActor(url, tempNewItem).then((response) => {
+      if (response.ok) {
+        loadingData(`${nameOfTable.toLowerCase()}`);
+        history.push('/actors');
+      } else {
+        alert('You are not admin');
+      }
+    });
+  };
+
+  const editRow = (id, tempNewItem) => {
+    const url = `${URL}/actors/` + id;
+    new Api().loadUpdateActor(url, id, tempNewItem).then((response) => {
+      if (response.ok) {
+        loadingData(`${nameOfTable.toLowerCase()}`);
+        history.push('/actors');
+      } else {
+        alert('You are not admin');
+      }
+    });
   };
 
   return (
@@ -204,7 +255,7 @@ function DashboardContent() {
               },
             }}
           >
-            {mainListItems}
+            <MainListItems />
           </ListComponent>
           <Divider />
         </Drawer>
@@ -219,26 +270,29 @@ function DashboardContent() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {/* Table */}
-            <MaterialTable
-              style={{
-                color: `${theme.palette.primary.main}`,
-                backgroundColor: `${theme.palette.background.paper}`,
-              }}
-              options={{
-                headerStyle: {
-                  backgroundColor: `${theme.palette.background.paper}`,
-                  color: `${theme.palette.primary.main}`,
-                },
-                rowStyle: {
-                  backgroundColor: `${theme.palette.background.paper}`,
-                  color: `${theme.palette.primary.main}`,
-                },
-              }}
-              icons={tableIcons}
-              columns={columns}
-              data={data}
-              title="Films"
-            />
+            <Switch>
+              <Route path={`/${nameOfTable.toLowerCase()}`} exact>
+                <Table
+                  column={columns}
+                  data={data}
+                  nameOfTable={nameOfTable}
+                  deleteRow={deleteRow}
+                  loadNew={loadNew}
+                  loadEdit={loadEdit}
+                />
+              </Route>
+              <Route path={`/${nameOfTable.toLowerCase()}/new`}>
+                <NewItem loadRow={loadRow} />
+              </Route>
+              <Route path={`/${nameOfTable.toLowerCase()}/:id`}>
+                <NewItem editRow={editRow} />
+              </Route>
+              <Route>
+                <>
+                  <CircularProgress color="success" />
+                </>
+              </Route>
+            </Switch>
           </Container>
         </BoxComponent>
       </Box>
