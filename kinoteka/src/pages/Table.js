@@ -9,7 +9,7 @@ import LayoutContext from '../store/layout-context';
 
 export default function Table(props) {
   const layoutContext = useContext(LayoutContext);
-  let theme = layoutContext.theme;
+  const theme = layoutContext.theme;
 
   return (
     <>

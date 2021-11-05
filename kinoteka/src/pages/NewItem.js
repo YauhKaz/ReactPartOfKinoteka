@@ -28,7 +28,7 @@ const NewItem = (props) => {
   const URL = process.env.REACT_APP_URL;
   let tempNewItem;
   const layoutContext = useContext(LayoutContext);
-  let theme = layoutContext.theme;
+  const { theme } = layoutContext;
   const { id } = useParams();
   const [initialValue, setInitialValue] = React.useState({
     name: '',

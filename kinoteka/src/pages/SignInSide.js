@@ -111,7 +111,7 @@ const TextFieldComponent = styled(TextField)(
 export default function SignInSide() {
   const layoutContext = useContext(LayoutContext);
   const history = useHistory();
-  let theme = layoutContext.theme;
+  const { theme } = layoutContext;
   const { isAdmin, setIsAdmin } = useContext(AuthContext);
 
   function toggleTheme() {

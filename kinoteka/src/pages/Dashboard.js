@@ -107,7 +107,7 @@ const Drawer = styled(MuiDrawer, {
 
 function DashboardContent() {
   const layoutContext = useContext(LayoutContext);
-  let theme = layoutContext.theme;
+  const { theme } = layoutContext;
   function toggleTheme() {
     layoutContext.toggle(layoutContext.mode);
   }
@@ -129,7 +129,7 @@ function DashboardContent() {
   }, []);
 
   const loadingTable = (e) => {
-    let urlEnd = e.target.outerText.toLowerCase();
+    const urlEnd = e.target.outerText.toLowerCase();
     setNameOfTable(e.target.outerText);
     loadingData(urlEnd);
   };
@@ -164,7 +164,7 @@ function DashboardContent() {
   };
 
   const loadRow = (tempNewItem) => {
-    let url = `${URL}/actors/`;
+    const url = `${URL}/actors/`;
     new Api().loadNewActor(url, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
@@ -176,7 +176,7 @@ function DashboardContent() {
   };
 
   const editRow = (id, tempNewItem) => {
-    let url = `${URL}/actors/` + id;
+    const url = `${URL}/actors/` + id;
     new Api().loadUpdateActor(url, id, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
