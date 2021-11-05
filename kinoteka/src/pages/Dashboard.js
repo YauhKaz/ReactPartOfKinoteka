@@ -24,6 +24,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import Table from './Table';
 import NewItem from './NewItem';
 import NewImage from './NewImage';
+import NewCategory from './NewCategory';
 import { Route, Switch } from 'react-router-dom';
 import { Api } from '../API/ApiClient';
 
@@ -285,10 +286,16 @@ function DashboardContent() {
               <Route path={`/${nameOfTable.toLowerCase()}/new`}>
                 {nameOfTable === 'Actors' && <NewItem loadRow={loadRow} />}
                 {nameOfTable === 'Images' && <NewImage loadRow={loadRow} />}
+                {nameOfTable === 'Categories' && (
+                  <NewCategory loadRow={loadRow} />
+                )}
               </Route>
               <Route path={`/${nameOfTable.toLowerCase()}/:id`}>
                 {nameOfTable === 'Actors' && <NewItem editRow={editRow} />}
                 {nameOfTable === 'Images' && <NewImage editRow={editRow} />}
+                {nameOfTable === 'Categories' && (
+                  <NewCategory editRow={editRow} />
+                )}
               </Route>
               <Route>
                 <>

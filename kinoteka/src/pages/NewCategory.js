@@ -24,34 +24,36 @@ const Div = styled.div`
   width: 40%;
 `;
 
-const NewImage = (props) => {
+const NewCategory = (props) => {
   const URL = process.env.REACT_APP_URL;
   let tempNewItem;
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
   const [initialValue, setInitialValue] = React.useState({
-    isMain: false,
-    url: '',
+    title: '',
+    description: '',
   });
   React.useEffect(() => {
     if (id !== undefined) {
-      const urlCurrent = `${URL}/images/` + id;
+      const urlCurrent = `${URL}/categories/` + id;
       new Api().loadOneActor(urlCurrent).then((result) => {
         setInitialValue({
-          isMain: result.isMain,
-          url: result.url,
+          title: result.title,
+          description: result.description,
         });
       });
     }
   }, []);
 
   const validationShema = yup.object().shape({
-    isMain: yup
-      .boolean()
-      .typeError('Должно быть boolean')
-      .required('Обязательно'),
-    url: yup
+    title: yup
+      .string()
+      .typeError('Должно быть строкой')
+      .required('Обязательно')
+      .min(1, 'Короткое описание')
+      .max(150, 'Длинное описание'),
+    description: yup
       .string()
       .typeError('Должно быть строкой')
       .required('Обязательно')
@@ -81,8 +83,8 @@ const NewImage = (props) => {
           onSubmit={(values) => {
             tempNewItem = [];
             tempNewItem.push({
-              isMain: values.isMain,
-              url: values.url,
+              title: values.title,
+              description: values.description,
             });
             if (id === undefined) props.loadRow(tempNewItem[0]);
             else props.editRow(id, tempNewItem[0]);
@@ -100,26 +102,28 @@ const NewImage = (props) => {
             <>
               <Section>
                 <Div>
-                  <label htmlFor="isMain">isMain</label>
+                  <label htmlFor="title">Title</label>
                   <input
                     type={'text'}
-                    value={values.isMain}
+                    value={values.title}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    name={'isMain'}
+                    name={'title'}
                   />
-                  {touched.isMain && errors.isMain && <p>{errors.isMain}</p>}
+                  {touched.title && errors.title && <p>{errors.title}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="url">Photo</label>
+                  <label htmlFor="description">Description</label>
                   <input
                     type={'text'}
-                    value={values.url}
+                    value={values.description}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    name={'url'}
+                    name={'description'}
                   />
-                  {touched.url && errors.url && <p>{errors.url}</p>}
+                  {touched.description && errors.description && (
+                    <p>{errors.description}</p>
+                  )}
                 </Div>
                 <div>
                   <button onClick={handleSubmit} type={'submit'}>
@@ -136,4 +140,4 @@ const NewImage = (props) => {
   );
 };
 
-export default NewImage;
+export default NewCategory;
