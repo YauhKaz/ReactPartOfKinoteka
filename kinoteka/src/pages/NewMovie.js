@@ -31,50 +31,60 @@ const NewItem = (props) => {
   const { theme } = layoutContext;
   const { id } = useParams();
   const [initialValue, setInitialValue] = React.useState({
-    name: '',
-    dob: '',
-    sex: '',
-    photoUrl: '',
+    title: '',
+    description: '',
+    createAt: '',
+    updateAt: '',
+    year: 1990,
   });
   React.useEffect(() => {
     if (id !== undefined) {
-      const url = `${URL}/actors/` + id;
+      const url = `${URL}/movies/` + id;
       new Api().loadOneActor(url).then((result) => {
-        let date = new Date(result.dob);
-        let day =
-          date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`;
-        let month =
-          date.getMonth() + 1 < 10
-            ? `0${date.getMonth() + 1}`
-            : `${date.getMonth() + 1}`;
+        const dateCreate = new Date(result.createAt);
+        const dateUpdate = new Date(result.updateAt);
+        const monthCreate =
+          dateCreate.getMonth() + 1 < 10
+            ? `0${dateCreate.getMonth() + 1}`
+            : `${dateCreate.getMonth() + 1}`;
+        const monthUpdate =
+          dateUpdate.getMonth() + 1 < 10
+            ? `0${dateUpdate.getMonth() + 1}`
+            : `${dateUpdate.getMonth() + 1}`;
+        const dayCreate =
+          dateCreate.getDate() < 10
+            ? `0${dateCreate.getDate()}`
+            : `${dateCreate.getDate()}`;
+        const dayUpdate =
+          dateUpdate.getDate() < 10
+            ? `0${dateUpdate.getDate()}`
+            : `${dateUpdate.getDate()}`;
         setInitialValue({
-          name: result.name,
-          dob: `${date.getFullYear()}-${month}-${day}`,
-          sex: result.sex,
-          photoUrl: result.photoUrl,
+          title: result.title,
+          description: result.description,
+          createAt: `${dateCreate.getFullYear()}-${monthCreate}-${dayCreate}`,
+          updateAt: `${dateUpdate.getFullYear()}-${monthUpdate}-${dayUpdate}`,
+          year: result.year,
         });
       });
     }
   }, []);
 
   const validationShema = yup.object().shape({
-    name: yup
+    title: yup
       .string()
       .typeError('Должно быть строкой')
       .required('Обязательно')
       .min(3, 'Короткое название'),
-    dob: yup.date().required('Обязательно'),
-    sex: yup
-      .string()
-      .typeError('Должно быть строкой')
-      .required('Обязательно')
-      .max(10, 'Длинное описание'),
-    photoUrl: yup
+    description: yup
       .string()
       .typeError('Должно быть строкой')
       .required('Обязательно')
       .min(3, 'Короткое описание')
       .max(150, 'Длинное описание'),
+    createAt: yup.date().required('Обязательно'),
+    updateAt: yup.date().required('Обязательно'),
+    year: yup.number().typeError('Должно быть числом').required('Обязательно'),
   });
 
   return (
@@ -99,10 +109,11 @@ const NewItem = (props) => {
           onSubmit={(values) => {
             tempNewItem = [];
             tempNewItem.push({
-              name: values.name,
-              dob: values.dob,
-              sex: values.sex,
-              photoUrl: values.photoUrl,
+              title: values.title,
+              description: values.description,
+              createAt: values.createAt,
+              updateAt: values.updateAt,
+              year: values.year,
             });
             if (id === undefined) props.loadRow(tempNewItem[0]);
             else props.editRow(id, tempNewItem[0]);
@@ -120,50 +131,65 @@ const NewItem = (props) => {
             <>
               <Section>
                 <Div>
-                  <label htmlFor="name"> Name </label>
+                  <label htmlFor="title">Title</label>
                   <input
                     type={'text'}
-                    value={values.name}
+                    value={values.title}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    name={'name'}
+                    name={'title'}
                   />
-                  {touched.name && errors.name && <p>{errors.name}</p>}
+                  {touched.title && errors.title && <p>{errors.title}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="dob">Date of Birthday</label>
+                  <label htmlFor="description">Description</label>
+                  <input
+                    type={'text'}
+                    value={values.description}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'description'}
+                  />
+                  {touched.description && errors.description && (
+                    <p>{errors.description}</p>
+                  )}
+                </Div>
+                <Div>
+                  <label htmlFor="createAt">Date of Create</label>
                   <input
                     type={'date'}
-                    value={values.dob}
+                    value={values.createAt}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    name={'dob'}
+                    name={'createAt'}
                   />
-                  {touched.dob && errors.dob && <p>{errors.dob}</p>}
-                </Div>
-                <Div>
-                  <label htmlFor="sex">Sex</label>
-                  <input
-                    type={'text'}
-                    value={values.sex}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    name={'sex'}
-                  />
-                  {touched.sex && errors.sex && <p>{errors.sex}</p>}
-                </Div>
-                <Div>
-                  <label htmlFor="photoUrl">Photo</label>
-                  <input
-                    type={'text'}
-                    value={values.photoUrl}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    name={'photoUrl'}
-                  />
-                  {touched.photoUrl && errors.photoUrl && (
-                    <p>{errors.photoUrl}</p>
+                  {touched.createAt && errors.createAt && (
+                    <p>{errors.createAt}</p>
                   )}
+                </Div>
+                <Div>
+                  <label htmlFor="updateAt">Date of Update</label>
+                  <input
+                    type={'date'}
+                    value={values.updateAt}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'updateAt'}
+                  />
+                  {touched.updateAt && errors.updateAt && (
+                    <p>{errors.updateAt}</p>
+                  )}
+                </Div>
+                <Div>
+                  <label htmlFor="year">Year</label>
+                  <input
+                    type={'text'}
+                    value={values.year}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'year'}
+                  />
+                  {touched.year && errors.year && <p>{errors.year}</p>}
                 </Div>
                 <div>
                   <button onClick={handleSubmit} type={'submit'}>

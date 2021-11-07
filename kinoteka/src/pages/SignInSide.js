@@ -112,7 +112,7 @@ export default function SignInSide() {
   const layoutContext = useContext(LayoutContext);
   const history = useHistory();
   const { theme } = layoutContext;
-  const { isAdmin, setIsAdmin } = useContext(AuthContext);
+  const { setIsAdmin } = useContext(AuthContext);
 
   function toggleTheme() {
     layoutContext.toggle(layoutContext.mode);
@@ -127,7 +127,6 @@ export default function SignInSide() {
     new Api().load(userData).then((response) => {
       if (response.ok && userData.username === 'admin') {
         setIsAdmin(true);
-        console.log(isAdmin);
         history.push('/movie');
       } else {
         history.push('/');

@@ -22,6 +22,7 @@ import MainListItems from '../components/listItems';
 import LayoutContext from '../store/layout-context';
 import styled, { ThemeProvider } from 'styled-components';
 import Table from './Table';
+import NewMovie from './NewMovie';
 import NewItem from './NewItem';
 import NewImage from './NewImage';
 import NewCategory from './NewCategory';
@@ -170,7 +171,7 @@ function DashboardContent() {
     new Api().loadNewActor(url, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
-        history.push('/actors');
+        history.push(`/${nameOfTable.toLowerCase()}`);
       } else {
         alert('You are not admin');
       }
@@ -182,7 +183,7 @@ function DashboardContent() {
     new Api().loadUpdateActor(url, id, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);
-        history.push('/actors');
+        history.push(`/${nameOfTable.toLowerCase()}`);
       } else {
         alert('You are not admin');
       }
@@ -284,6 +285,7 @@ function DashboardContent() {
                 />
               </Route>
               <Route path={`/${nameOfTable.toLowerCase()}/new`}>
+                {nameOfTable === 'Movies' && <NewMovie loadRow={loadRow} />}
                 {nameOfTable === 'Actors' && <NewItem loadRow={loadRow} />}
                 {nameOfTable === 'Images' && <NewImage loadRow={loadRow} />}
                 {nameOfTable === 'Categories' && (
@@ -291,6 +293,7 @@ function DashboardContent() {
                 )}
               </Route>
               <Route path={`/${nameOfTable.toLowerCase()}/:id`}>
+                {nameOfTable === 'Movies' && <NewMovie editRow={editRow} />}
                 {nameOfTable === 'Actors' && <NewItem editRow={editRow} />}
                 {nameOfTable === 'Images' && <NewImage editRow={editRow} />}
                 {nameOfTable === 'Categories' && (
