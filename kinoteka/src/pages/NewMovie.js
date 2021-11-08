@@ -5,6 +5,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
+// import TextField from '@mui/material/TextField';
+// import Checkmarks from '../components/Checkmarks';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 
@@ -14,19 +16,23 @@ const Section = styled.section`
   justify-content: space-between;
   align-items: center;
   width: 60%;
-  height: 250px;
 `;
 
 const Div = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 40%;
+  width: 50%;
 `;
 
 const NewItem = (props) => {
   const URL = process.env.REACT_APP_URL;
   let tempNewItem;
+  // const categoryArray = [];
+  // new Api().loadAllItems(`${URL}/categories/`).then((result) => {
+  //   result.map((item) => categoryArray.push(item.title));
+  //   console.log(categoryArray);
+  // });
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
@@ -35,7 +41,10 @@ const NewItem = (props) => {
     description: '',
     createAt: '',
     updateAt: '',
-    year: 1990,
+    year: '',
+    images: [],
+    actors: [],
+    categories: [],
   });
   React.useEffect(() => {
     if (id !== undefined) {
@@ -65,6 +74,9 @@ const NewItem = (props) => {
           createAt: `${dateCreate.getFullYear()}-${monthCreate}-${dayCreate}`,
           updateAt: `${dateUpdate.getFullYear()}-${monthUpdate}-${dayUpdate}`,
           year: result.year,
+          images: [],
+          actors: [],
+          categories: [],
         });
       });
     }
@@ -84,7 +96,7 @@ const NewItem = (props) => {
       .max(150, 'Длинное описание'),
     createAt: yup.date().required('Обязательно'),
     updateAt: yup.date().required('Обязательно'),
-    year: yup.number().typeError('Должно быть числом').required('Обязательно'),
+    year: yup.string().typeError('Должно быть числом').required('Обязательно'),
   });
 
   return (
@@ -94,7 +106,7 @@ const NewItem = (props) => {
           display: 'flex',
           margin: 'auto auto',
           width: '800px',
-          height: '400px',
+          height: '600px',
           background: 'white',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -113,7 +125,10 @@ const NewItem = (props) => {
               description: values.description,
               createAt: values.createAt,
               updateAt: values.updateAt,
-              year: values.year,
+              year: Number(values.year),
+              images: [{ id: Number(values.images) }],
+              actors: [],
+              categories: [],
             });
             if (id === undefined) props.loadRow(tempNewItem[0]);
             else props.editRow(id, tempNewItem[0]);
@@ -131,6 +146,16 @@ const NewItem = (props) => {
             <>
               <Section>
                 <Div>
+                  {/* <TextField
+                    id="outlined-basic"
+                    label="Title"
+                    variant="outlined"
+                    type={'text'}
+                    value={values.title}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'title'}
+                  /> */}
                   <label htmlFor="title">Title</label>
                   <input
                     type={'text'}
@@ -142,6 +167,18 @@ const NewItem = (props) => {
                   {touched.title && errors.title && <p>{errors.title}</p>}
                 </Div>
                 <Div>
+                  {/* <TextField
+                    id="outlined-multiline-static"
+                    label="Description"
+                    multiline
+                    rows={4}
+                    defaultValue="Description"
+                    type={'text'}
+                    value={values.description}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'description'}
+                  /> */}
                   <label htmlFor="description">Description</label>
                   <input
                     type={'text'}
@@ -190,6 +227,42 @@ const NewItem = (props) => {
                     name={'year'}
                   />
                   {touched.year && errors.year && <p>{errors.year}</p>}
+                </Div>
+                <Div>
+                  <label htmlFor="images">Images</label>
+                  <input
+                    type={'text'}
+                    value={values.images}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'images'}
+                  />
+                  {touched.images && errors.images && <p>{errors.images}</p>}
+                </Div>
+                <Div>
+                  <label htmlFor="actors">Actors</label>
+                  <input
+                    type={'text'}
+                    value={values.actors}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'actors'}
+                  />
+                  {touched.actors && errors.actors && <p>{errors.actors}</p>}
+                </Div>
+                <Div>
+                  <label htmlFor="categories">Categories</label>
+                  <input
+                    type={'text'}
+                    value={values.categories}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name={'categories'}
+                  />
+                  {touched.categories && errors.categories && (
+                    <p>{errors.categories}</p>
+                  )}
+                  {/* <Checkmarks categoryArray={categoryArray} /> */}
                 </Div>
                 <div>
                   <button onClick={handleSubmit} type={'submit'}>
