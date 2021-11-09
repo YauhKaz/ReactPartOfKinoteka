@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 // import Checkmarks from '../components/Checkmarks';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
+import PreImage from '../components/PreImage';
 
 const Section = styled.section`
   display: flex;
@@ -237,6 +238,7 @@ const NewItem = (props) => {
                     onBlur={handleBlur}
                     name={'images'}
                   />
+                  <PreImage image={values.images} />
                   {touched.images && errors.images && <p>{errors.images}</p>}
                 </Div>
                 <Div>
