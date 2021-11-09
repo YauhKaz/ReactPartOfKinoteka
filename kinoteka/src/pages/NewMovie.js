@@ -5,8 +5,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
-// import TextField from '@mui/material/TextField';
-// import Checkmarks from '../components/Checkmarks';
+import TextField from '@mui/material/TextField';
+import Checkmarks from '../components/Checkmarks';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 import PreImage from '../components/PreImage';
@@ -23,17 +23,26 @@ const Div = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 50%;
+  width: 100%;
+  margin: 10px 0px;
+  & div {
+    min-width: 100%;
+  }
 `;
 
 const NewItem = (props) => {
   const URL = process.env.REACT_APP_URL;
   let tempNewItem;
-  // const categoryArray = [];
-  // new Api().loadAllItems(`${URL}/categories/`).then((result) => {
-  //   result.map((item) => categoryArray.push(item.title));
-  //   console.log(categoryArray);
-  // });
+  const categoryArray = [];
+  const actorsArray = [];
+  new Api().loadAllItems(`${URL}/categories/`).then((result) => {
+    result.map((item) => categoryArray.push(item.title));
+    console.log(categoryArray);
+  });
+  new Api().loadAllItems(`${URL}/actors/`).then((result) => {
+    result.map((item) => actorsArray.push(item.title));
+    console.log(actorsArray);
+  });
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
@@ -106,8 +115,7 @@ const NewItem = (props) => {
         sx={{
           display: 'flex',
           margin: 'auto auto',
-          width: '800px',
-          height: '600px',
+          width: '100%',
           background: 'white',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -147,18 +155,9 @@ const NewItem = (props) => {
             <>
               <Section>
                 <Div>
-                  {/* <TextField
-                    id="outlined-basic"
+                  <TextField
                     label="Title"
                     variant="outlined"
-                    type={'text'}
-                    value={values.title}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    name={'title'}
-                  /> */}
-                  <label htmlFor="title">Title</label>
-                  <input
                     type={'text'}
                     value={values.title}
                     onChange={handleChange}
@@ -168,20 +167,11 @@ const NewItem = (props) => {
                   {touched.title && errors.title && <p>{errors.title}</p>}
                 </Div>
                 <Div>
-                  {/* <TextField
-                    id="outlined-multiline-static"
+                  <TextField
                     label="Description"
                     multiline
                     rows={4}
                     defaultValue="Description"
-                    type={'text'}
-                    value={values.description}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    name={'description'}
-                  /> */}
-                  <label htmlFor="description">Description</label>
-                  <input
                     type={'text'}
                     value={values.description}
                     onChange={handleChange}
@@ -193,34 +183,41 @@ const NewItem = (props) => {
                   )}
                 </Div>
                 <Div>
-                  <label htmlFor="createAt">Date of Create</label>
-                  <input
-                    type={'date'}
-                    value={values.createAt}
+                  <TextField
+                    label="Date of Create"
+                    type="date"
+                    defaultValue={values.createAt}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'createAt'}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                   {touched.createAt && errors.createAt && (
                     <p>{errors.createAt}</p>
                   )}
                 </Div>
                 <Div>
-                  <label htmlFor="updateAt">Date of Update</label>
-                  <input
-                    type={'date'}
-                    value={values.updateAt}
+                  <TextField
+                    label="Date of Update"
+                    type="date"
+                    defaultValue={values.updateAt}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'updateAt'}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                   {touched.updateAt && errors.updateAt && (
                     <p>{errors.updateAt}</p>
                   )}
                 </Div>
                 <Div>
-                  <label htmlFor="year">Year</label>
-                  <input
+                  <TextField
+                    label="Year"
+                    variant="outlined"
                     type={'text'}
                     value={values.year}
                     onChange={handleChange}
@@ -230,8 +227,9 @@ const NewItem = (props) => {
                   {touched.year && errors.year && <p>{errors.year}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="images">Images</label>
-                  <input
+                  <TextField
+                    label="Images"
+                    variant="outlined"
                     type={'text'}
                     value={values.images}
                     onChange={handleChange}
@@ -242,29 +240,30 @@ const NewItem = (props) => {
                   {touched.images && errors.images && <p>{errors.images}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="actors">Actors</label>
+                  {/* <label htmlFor="actors">Actors</label>
                   <input
                     type={'text'}
                     value={values.actors}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'actors'}
-                  />
+                  /> */}
+                  <Checkmarks categoryArray={actorsArray} />
                   {touched.actors && errors.actors && <p>{errors.actors}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="categories">Categories</label>
+                  {/* <label htmlFor="categories">Categories</label>
                   <input
                     type={'text'}
                     value={values.categories}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'categories'}
-                  />
+                  /> */}
                   {touched.categories && errors.categories && (
                     <p>{errors.categories}</p>
                   )}
-                  {/* <Checkmarks categoryArray={categoryArray} /> */}
+                  <Checkmarks categoryArray={categoryArray} />
                 </Div>
                 <div>
                   <button onClick={handleSubmit} type={'submit'}>

@@ -16,11 +16,9 @@ export default function PreImage(props) {
   const [isImage, setIsImage] = React.useState(false);
   const image = new Image();
   image.onload = function () {
-    console.log('onload');
     setIsImage(true);
   };
   image.onerror = function () {
-    console.log('onerror');
     setIsImage(false);
   };
   image.src = props.image;

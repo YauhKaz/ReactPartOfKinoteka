@@ -42,7 +42,7 @@ export default function MultipleSelectCheckmarks(props) {
           multiple
           value={personName}
           onChange={handleChange}
-          input={<OutlinedInput label="Tag" />}
+          input={<OutlinedInput label="Categories" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
