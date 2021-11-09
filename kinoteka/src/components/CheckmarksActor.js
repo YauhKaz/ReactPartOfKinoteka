@@ -20,7 +20,7 @@ const MenuProps = {
 
 export default function MultipleSelectCheckmarks(props) {
   const [personName, setPersonName] = React.useState([]);
-  const [names] = React.useState(props.categoryArray);
+  const [names] = React.useState(props.actorsArray);
   const handleChange = (event) => {
     const {
       target: { value },
@@ -38,14 +38,14 @@ export default function MultipleSelectCheckmarks(props) {
           multiple
           value={personName}
           onChange={handleChange}
-          input={<OutlinedInput label="Categories" />}
+          input={<OutlinedInput label="Actors" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+          {names.map((item) => (
+            <MenuItem key={item} value={item}>
+              <Checkbox checked={personName.indexOf(item) > -1} />
+              <ListItemText primary={item} />
             </MenuItem>
           ))}
         </Select>

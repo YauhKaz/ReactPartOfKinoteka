@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Checkmarks from '../components/Checkmarks';
+import CheckmarksActor from '../components/CheckmarksActor';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 import PreImage from '../components/PreImage';
@@ -37,11 +38,9 @@ const NewItem = (props) => {
   const actorsArray = [];
   new Api().loadAllItems(`${URL}/categories/`).then((result) => {
     result.map((item) => categoryArray.push(item.title));
-    console.log(categoryArray);
   });
   new Api().loadAllItems(`${URL}/actors/`).then((result) => {
-    result.map((item) => actorsArray.push(item.title));
-    console.log(actorsArray);
+    result.map((item) => actorsArray.push(item.name));
   });
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
@@ -129,16 +128,34 @@ const NewItem = (props) => {
           enableReinitialize
           onSubmit={(values) => {
             tempNewItem = [];
-            tempNewItem.push({
-              title: values.title,
-              description: values.description,
-              createAt: values.createAt,
-              updateAt: values.updateAt,
-              year: Number(values.year),
-              images: [{ id: Number(values.images) }],
-              actors: [],
-              categories: [],
-            });
+            console.log(values.images);
+            if (values.images !== []) {
+              new Api().loadNewImage(values.images);
+              new Api().loadAllItems(`${URL}/images`).then(() => {
+                tempNewItem.push({
+                  title: values.title,
+                  description: values.description,
+                  createAt: values.createAt,
+                  updateAt: values.updateAt,
+                  year: Number(values.year),
+                  images: [],
+                  //{ id: result[result.length - 1].id }
+                  actors: [],
+                  categories: [],
+                });
+              });
+            } else {
+              tempNewItem.push({
+                title: values.title,
+                description: values.description,
+                createAt: values.createAt,
+                updateAt: values.updateAt,
+                year: Number(values.year),
+                images: [],
+                actors: [],
+                categories: [],
+              });
+            }
             if (id === undefined) props.loadRow(tempNewItem[0]);
             else props.editRow(id, tempNewItem[0]);
           }}
@@ -248,7 +265,7 @@ const NewItem = (props) => {
                     onBlur={handleBlur}
                     name={'actors'}
                   /> */}
-                  <Checkmarks categoryArray={actorsArray} />
+                  <CheckmarksActor actorsArray={actorsArray} />
                   {touched.actors && errors.actors && <p>{errors.actors}</p>}
                 </Div>
                 <Div>

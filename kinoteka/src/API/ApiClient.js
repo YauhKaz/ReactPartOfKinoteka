@@ -84,6 +84,29 @@ export class Api {
     }
   }
 
+  async loadNewImage(imageUrl) {
+    const url = `${temp}/images`;
+    const data = {
+      isMain: false,
+      url: imageUrl,
+    };
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token.access_token}`,
+        },
+      });
+      if (response.ok) {
+        return response;
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  }
+
   async deleteItem(url) {
     try {
       const response = await fetch(url, {
