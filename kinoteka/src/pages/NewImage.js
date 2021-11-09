@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 
@@ -14,14 +15,17 @@ const Section = styled.section`
   justify-content: space-between;
   align-items: center;
   width: 60%;
-  height: 250px;
 `;
 
 const Div = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 40%;
+  width: 100%;
+  margin: 10px 0px;
+  & div {
+    min-width: 100%;
+  }
 `;
 
 const NewImage = (props) => {
@@ -100,8 +104,9 @@ const NewImage = (props) => {
             <>
               <Section>
                 <Div>
-                  <label htmlFor="isMain">isMain</label>
-                  <input
+                  <TextField
+                    label="isMain"
+                    variant="outlined"
                     type={'text'}
                     value={values.isMain}
                     onChange={handleChange}
@@ -111,8 +116,9 @@ const NewImage = (props) => {
                   {touched.isMain && errors.isMain && <p>{errors.isMain}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="url">Photo</label>
-                  <input
+                  <TextField
+                    label="Photo"
+                    variant="outlined"
                     type={'text'}
                     value={values.url}
                     onChange={handleChange}

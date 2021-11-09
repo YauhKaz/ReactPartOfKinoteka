@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 
@@ -14,14 +15,17 @@ const Section = styled.section`
   justify-content: space-between;
   align-items: center;
   width: 60%;
-  height: 250px;
 `;
 
 const Div = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 40%;
+  width: 100%;
+  margin: 10px 0px;
+  & div {
+    min-width: 100%;
+  }
 `;
 
 const NewItem = (props) => {
@@ -40,10 +44,10 @@ const NewItem = (props) => {
     if (id !== undefined) {
       const url = `${URL}/actors/` + id;
       new Api().loadOneActor(url).then((result) => {
-        let date = new Date(result.dob);
-        let day =
+        const date = new Date(result.dob);
+        const day =
           date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`;
-        let month =
+        const month =
           date.getMonth() + 1 < 10
             ? `0${date.getMonth() + 1}`
             : `${date.getMonth() + 1}`;
@@ -120,8 +124,9 @@ const NewItem = (props) => {
             <>
               <Section>
                 <Div>
-                  <label htmlFor="name"> Name </label>
-                  <input
+                  <TextField
+                    label="Name"
+                    variant="outlined"
                     type={'text'}
                     value={values.name}
                     onChange={handleChange}
@@ -131,19 +136,23 @@ const NewItem = (props) => {
                   {touched.name && errors.name && <p>{errors.name}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="dob">Date of Birthday</label>
-                  <input
-                    type={'date'}
-                    value={values.dob}
+                  <TextField
+                    label="Date of Birthday"
+                    type="date"
+                    defaultValue={values.dob}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'dob'}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                   {touched.dob && errors.dob && <p>{errors.dob}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="sex">Sex</label>
-                  <input
+                  <TextField
+                    label="Sex"
+                    variant="outlined"
                     type={'text'}
                     value={values.sex}
                     onChange={handleChange}
@@ -153,8 +162,9 @@ const NewItem = (props) => {
                   {touched.sex && errors.sex && <p>{errors.sex}</p>}
                 </Div>
                 <Div>
-                  <label htmlFor="photoUrl">Photo</label>
-                  <input
+                  <TextField
+                    label="Photo"
+                    variant="outlined"
                     type={'text'}
                     value={values.photoUrl}
                     onChange={handleChange}
