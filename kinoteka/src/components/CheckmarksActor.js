@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import SelectedActorContext from '../store/selected-actor-context';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,10 +22,12 @@ const MenuProps = {
 export default function MultipleSelectCheckmarks(props) {
   const [personName, setPersonName] = React.useState([]);
   const [names] = React.useState(props.actorsArray);
+  const { setSelectedActors } = React.useContext(SelectedActorContext);
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
+    setSelectedActors(value);
     setPersonName(typeof value === 'string' ? value.split(',') : value);
   };
 

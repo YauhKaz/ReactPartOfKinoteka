@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import PreImage from '../components/PreImage';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 
@@ -125,6 +126,7 @@ const NewImage = (props) => {
                     onBlur={handleBlur}
                     name={'url'}
                   />
+                  <PreImage image={values.url} />
                   {touched.url && errors.url && <p>{errors.url}</p>}
                 </Div>
                 <div>

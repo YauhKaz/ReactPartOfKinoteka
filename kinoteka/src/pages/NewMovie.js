@@ -11,6 +11,8 @@ import CheckmarksActor from '../components/CheckmarksActor';
 import LayoutContext from '../store/layout-context';
 import { Api } from '../API/ApiClient';
 import PreImage from '../components/PreImage';
+import SelectedCategoryContext from '../store/selected-category-context';
+import SelectedActorContext from '../store/selected-actor-context';
 
 const Section = styled.section`
   display: flex;
@@ -32,6 +34,11 @@ const Div = styled.div`
 `;
 
 const NewItem = (props) => {
+  const { selectedCategories, setSelectedCategories } = React.useContext(
+    SelectedCategoryContext,
+  );
+  const { selectedActors, setSelectedActors } =
+    React.useContext(SelectedActorContext);
   const URL = process.env.REACT_APP_URL;
   let tempNewItem;
   const categoryArray = [];
@@ -128,10 +135,13 @@ const NewItem = (props) => {
           enableReinitialize
           onSubmit={(values) => {
             tempNewItem = [];
-            console.log(values.images);
-            if (values.images !== []) {
-              new Api().loadNewImage(values.images);
-              new Api().loadAllItems(`${URL}/images`).then(() => {
+            console.log(selectedCategories);
+            console.log(selectedActors);
+            if (values.images.length !== 0) {
+              console.log(values.images.length);
+              // new Api().loadNewImage(values.images);
+              new Api().loadAllItems(`${URL}/images`).then((result) => {
+                console.log('id:', result[result.length - 1].id);
                 tempNewItem.push({
                   title: values.title,
                   description: values.description,
@@ -143,8 +153,13 @@ const NewItem = (props) => {
                   actors: [],
                   categories: [],
                 });
+                setSelectedCategories([]);
+                setSelectedActors([]);
+                if (id === undefined) props.loadRow(tempNewItem[0]);
+                else props.editRow(id, tempNewItem[0]);
               });
             } else {
+              console.log('===');
               tempNewItem.push({
                 title: values.title,
                 description: values.description,
@@ -155,9 +170,9 @@ const NewItem = (props) => {
                 actors: [],
                 categories: [],
               });
+              if (id === undefined) props.loadRow(tempNewItem[0]);
+              else props.editRow(id, tempNewItem[0]);
             }
-            if (id === undefined) props.loadRow(tempNewItem[0]);
-            else props.editRow(id, tempNewItem[0]);
           }}
         >
           {({
@@ -257,26 +272,10 @@ const NewItem = (props) => {
                   {touched.images && errors.images && <p>{errors.images}</p>}
                 </Div>
                 <Div>
-                  {/* <label htmlFor="actors">Actors</label>
-                  <input
-                    type={'text'}
-                    value={values.actors}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    name={'actors'}
-                  /> */}
                   <CheckmarksActor actorsArray={actorsArray} />
                   {touched.actors && errors.actors && <p>{errors.actors}</p>}
                 </Div>
                 <Div>
-                  {/* <label htmlFor="categories">Categories</label>
-                  <input
-                    type={'text'}
-                    value={values.categories}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    name={'categories'}
-                  /> */}
                   {touched.categories && errors.categories && (
                     <p>{errors.categories}</p>
                   )}
