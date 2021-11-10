@@ -136,30 +136,50 @@ const NewItem = (props) => {
           onSubmit={(values) => {
             tempNewItem = [];
             console.log(selectedCategories);
-            console.log(selectedActors);
             if (values.images.length !== 0) {
-              console.log(values.images.length);
-              // new Api().loadNewImage(values.images);
-              new Api().loadAllItems(`${URL}/images`).then((result) => {
-                console.log('id:', result[result.length - 1].id);
-                tempNewItem.push({
-                  title: values.title,
-                  description: values.description,
-                  createAt: values.createAt,
-                  updateAt: values.updateAt,
-                  year: Number(values.year),
-                  images: [],
-                  //{ id: result[result.length - 1].id }
-                  actors: [],
-                  categories: [],
+              let resultActors = [];
+              if (selectedActors.length !== 0) {
+                new Api().loadAllItems(`${URL}/actors`).then((result) => {
+                  selectedActors.map((elem) => {
+                    result.map((item) => {
+                      if (item.name === elem) {
+                        resultActors.push({ id: item.id });
+                      }
+                    });
+                  });
                 });
-                setSelectedCategories([]);
-                setSelectedActors([]);
-                if (id === undefined) props.loadRow(tempNewItem[0]);
-                else props.editRow(id, tempNewItem[0]);
+              }
+              new Api().loadNewImage(values.images).then(() => {
+                new Api().loadAllItems(`${URL}/images`).then((result) => {
+                  tempNewItem.push({
+                    title: values.title,
+                    description: values.description,
+                    createAt: values.createAt,
+                    updateAt: values.updateAt,
+                    year: Number(values.year),
+                    images: [{ id: result[result.length - 1].id }],
+                    actors: resultActors,
+                    categories: [],
+                  });
+                  setSelectedCategories([]);
+                  setSelectedActors([]);
+                  if (id === undefined) props.loadRow(tempNewItem[0]);
+                  else props.editRow(id, tempNewItem[0]);
+                });
               });
             } else {
-              console.log('===');
+              let resultActors = [];
+              if (selectedActors.length !== 0) {
+                new Api().loadAllItems(`${URL}/actors`).then((result) => {
+                  selectedActors.map((elem) => {
+                    result.map((item) => {
+                      if (item.name === elem) {
+                        resultActors.push({ id: item.id });
+                      }
+                    });
+                  });
+                });
+              }
               tempNewItem.push({
                 title: values.title,
                 description: values.description,
@@ -167,7 +187,7 @@ const NewItem = (props) => {
                 updateAt: values.updateAt,
                 year: Number(values.year),
                 images: [],
-                actors: [],
+                actors: resultActors,
                 categories: [],
               });
               if (id === undefined) props.loadRow(tempNewItem[0]);

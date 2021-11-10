@@ -167,8 +167,8 @@ function DashboardContent() {
   };
 
   const loadRow = (tempNewItem) => {
-    const url = `${URL}/${nameOfTable.toLowerCase()}/`;
     console.log(tempNewItem);
+    const url = `${URL}/${nameOfTable.toLowerCase()}/`;
     new Api().loadNewActor(url, tempNewItem).then((response) => {
       if (response.ok) {
         loadingData(`${nameOfTable.toLowerCase()}`);

@@ -71,7 +71,6 @@ const NewImage = (props) => {
           display: 'flex',
           margin: 'auto auto',
           width: '800px',
-          height: '400px',
           background: 'white',
           flexDirection: 'row',
           justifyContent: 'center',
