@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import LayoutContext from '../store/layout-context';
+import PreImage from '../components/PreImage';
 import { Api } from '../API/ApiClient';
 
 const Section = styled.section`
@@ -34,13 +35,13 @@ const NewItem = (props) => {
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
-  const [initialValue, setInitialValue] = React.useState({
+  const [initialValue, setInitialValue] = useState({
     name: '',
     dob: '',
     sex: '',
     photoUrl: '',
   });
-  React.useEffect(() => {
+  useEffect(() => {
     if (id !== undefined) {
       const url = `${URL}/actors/` + id;
       new Api().loadOneActor(url).then((result) => {
@@ -60,6 +61,18 @@ const NewItem = (props) => {
       });
     }
   }, []);
+
+  const handleSubmit = (values) => {
+    tempNewItem = [];
+    tempNewItem.push({
+      name: values.name,
+      dob: values.dob,
+      sex: values.sex,
+      photoUrl: values.photoUrl,
+    });
+    if (id === undefined) props.loadRow(tempNewItem[0]);
+    else props.editRow(id, tempNewItem[0]);
+  };
 
   const validationShema = yup.object().shape({
     name: yup
@@ -87,8 +100,7 @@ const NewItem = (props) => {
         sx={{
           display: 'flex',
           margin: 'auto auto',
-          width: '800px',
-          height: '400px',
+          width: '100%',
           background: 'white',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -101,15 +113,7 @@ const NewItem = (props) => {
           validationSchema={validationShema}
           enableReinitialize
           onSubmit={(values) => {
-            tempNewItem = [];
-            tempNewItem.push({
-              name: values.name,
-              dob: values.dob,
-              sex: values.sex,
-              photoUrl: values.photoUrl,
-            });
-            if (id === undefined) props.loadRow(tempNewItem[0]);
-            else props.editRow(id, tempNewItem[0]);
+            handleSubmit(values);
           }}
         >
           {({
@@ -171,6 +175,7 @@ const NewItem = (props) => {
                     onBlur={handleBlur}
                     name={'photoUrl'}
                   />
+                  <PreImage image={values.photoUrl} />
                   {touched.photoUrl && errors.photoUrl && (
                     <p>{errors.photoUrl}</p>
                   )}

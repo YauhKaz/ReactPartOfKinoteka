@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
@@ -34,11 +34,11 @@ const NewCategory = (props) => {
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
-  const [initialValue, setInitialValue] = React.useState({
+  const [initialValue, setInitialValue] = useState({
     title: '',
     description: '',
   });
-  React.useEffect(() => {
+  useEffect(() => {
     if (id !== undefined) {
       const urlCurrent = `${URL}/categories/` + id;
       new Api().loadOneActor(urlCurrent).then((result) => {
@@ -49,6 +49,16 @@ const NewCategory = (props) => {
       });
     }
   }, []);
+
+  const handleSubmit = (values) => {
+    tempNewItem = [];
+    tempNewItem.push({
+      title: values.title,
+      description: values.description,
+    });
+    if (id === undefined) props.loadRow(tempNewItem[0]);
+    else props.editRow(id, tempNewItem[0]);
+  };
 
   const validationShema = yup.object().shape({
     title: yup
@@ -71,8 +81,7 @@ const NewCategory = (props) => {
         sx={{
           display: 'flex',
           margin: 'auto auto',
-          width: '800px',
-          height: '400px',
+          width: '100%',
           background: 'white',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -85,13 +94,7 @@ const NewCategory = (props) => {
           validationSchema={validationShema}
           enableReinitialize
           onSubmit={(values) => {
-            tempNewItem = [];
-            tempNewItem.push({
-              title: values.title,
-              description: values.description,
-            });
-            if (id === undefined) props.loadRow(tempNewItem[0]);
-            else props.editRow(id, tempNewItem[0]);
+            handleSubmit(values);
           }}
         >
           {({

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
@@ -34,11 +34,11 @@ const Div = styled.div`
 `;
 
 const NewItem = (props) => {
-  const { selectedCategories, setSelectedCategories } = React.useContext(
+  const { selectedCategories, setSelectedCategories } = useContext(
     SelectedCategoryContext,
   );
   const { selectedActors, setSelectedActors } =
-    React.useContext(SelectedActorContext);
+    useContext(SelectedActorContext);
   const URL = process.env.REACT_APP_URL;
   let tempNewItem;
   const categoryArray = [];
@@ -52,7 +52,7 @@ const NewItem = (props) => {
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
-  const [initialValue, setInitialValue] = React.useState({
+  const [initialValue, setInitialValue] = useState({
     title: '',
     description: '',
     createAt: '',
@@ -62,11 +62,10 @@ const NewItem = (props) => {
     actors: [],
     categories: [],
   });
-  React.useEffect(() => {
+  useEffect(() => {
     if (id !== undefined) {
       const url = `${URL}/movies/` + id;
       new Api().loadOneActor(url).then((result) => {
-        console.log(result);
         const dateCreate = new Date(result.createAt);
         const dateUpdate = new Date(result.updateAt);
         const monthCreate =
@@ -85,19 +84,83 @@ const NewItem = (props) => {
           dateUpdate.getDate() < 10
             ? `0${dateUpdate.getDate()}`
             : `${dateUpdate.getDate()}`;
+        let image;
+        if (result.images.length !== 0) image = result.images[0].url;
+        else image = [];
         setInitialValue({
           title: result.title,
           description: result.description,
           createAt: `${dateCreate.getFullYear()}-${monthCreate}-${dayCreate}`,
           updateAt: `${dateUpdate.getFullYear()}-${monthUpdate}-${dayUpdate}`,
           year: result.year,
-          images: result.images[0].url,
+          images: image,
           actors: [],
           categories: [],
         });
       });
     }
   }, []);
+
+  const handleSubmit = (values) => {
+    tempNewItem = [];
+    let resultActors = [];
+    let resultCategories = [];
+    if (selectedActors.length !== 0) {
+      new Api().loadAllItems(`${URL}/actors`).then((result) => {
+        selectedActors.map((elem) => {
+          result.map((item) => {
+            if (item.name === elem) {
+              resultActors.push({ id: item.id });
+            }
+          });
+        });
+      });
+    }
+    if (selectedCategories.length !== 0) {
+      new Api().loadAllItems(`${URL}/categories`).then((result) => {
+        selectedCategories.map((elem) => {
+          result.map((item) => {
+            if (item.title === elem) {
+              resultCategories.push({ id: item.id });
+            }
+          });
+        });
+      });
+    }
+    if (values.images.length !== 0) {
+      new Api().loadNewImage(values.images).then(() => {
+        new Api().loadAllItems(`${URL}/images`).then((result) => {
+          tempNewItem.push({
+            title: values.title,
+            description: values.description,
+            createAt: values.createAt,
+            updateAt: values.updateAt,
+            year: Number(values.year),
+            images: [{ id: result[result.length - 1].id }],
+            actors: resultActors,
+            categories: resultCategories,
+          });
+          setSelectedCategories([]);
+          setSelectedActors([]);
+          if (id === undefined) props.loadRow(tempNewItem[0]);
+          else props.editRow(id, tempNewItem[0]);
+        });
+      });
+    } else {
+      tempNewItem.push({
+        title: values.title,
+        description: values.description,
+        createAt: values.createAt,
+        updateAt: values.updateAt,
+        year: Number(values.year),
+        images: [],
+        actors: resultActors,
+        categories: resultCategories,
+      });
+      if (id === undefined) props.loadRow(tempNewItem[0]);
+      else props.editRow(id, tempNewItem[0]);
+    }
+  };
 
   const validationShema = yup.object().shape({
     title: yup
@@ -135,64 +198,7 @@ const NewItem = (props) => {
           validationSchema={validationShema}
           enableReinitialize
           onSubmit={(values) => {
-            tempNewItem = [];
-            let resultActors = [];
-            let resultCategories = [];
-            if (selectedActors.length !== 0) {
-              new Api().loadAllItems(`${URL}/actors`).then((result) => {
-                selectedActors.map((elem) => {
-                  result.map((item) => {
-                    if (item.name === elem) {
-                      resultActors.push({ id: item.id });
-                    }
-                  });
-                });
-              });
-            }
-            if (selectedCategories.length !== 0) {
-              new Api().loadAllItems(`${URL}/categories`).then((result) => {
-                selectedCategories.map((elem) => {
-                  result.map((item) => {
-                    if (item.title === elem) {
-                      resultCategories.push({ id: item.id });
-                    }
-                  });
-                });
-              });
-            }
-            if (values.images.length !== 0) {
-              new Api().loadNewImage(values.images).then(() => {
-                new Api().loadAllItems(`${URL}/images`).then((result) => {
-                  tempNewItem.push({
-                    title: values.title,
-                    description: values.description,
-                    createAt: values.createAt,
-                    updateAt: values.updateAt,
-                    year: Number(values.year),
-                    images: [{ id: result[result.length - 1].id }],
-                    actors: resultActors,
-                    categories: resultCategories,
-                  });
-                  setSelectedCategories([]);
-                  setSelectedActors([]);
-                  if (id === undefined) props.loadRow(tempNewItem[0]);
-                  else props.editRow(id, tempNewItem[0]);
-                });
-              });
-            } else {
-              tempNewItem.push({
-                title: values.title,
-                description: values.description,
-                createAt: values.createAt,
-                updateAt: values.updateAt,
-                year: Number(values.year),
-                images: [],
-                actors: resultActors,
-                categories: resultCategories,
-              });
-              if (id === undefined) props.loadRow(tempNewItem[0]);
-              else props.editRow(id, tempNewItem[0]);
-            }
+            handleSubmit(values);
           }}
         >
           {({
@@ -223,7 +229,6 @@ const NewItem = (props) => {
                     label="Description"
                     multiline
                     rows={4}
-                    defaultValue="Description"
                     type={'text'}
                     value={values.description}
                     onChange={handleChange}

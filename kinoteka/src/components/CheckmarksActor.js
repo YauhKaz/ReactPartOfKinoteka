@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useContext } from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,9 +21,9 @@ const MenuProps = {
 };
 
 export default function MultipleSelectCheckmarks(props) {
-  const [personName, setPersonName] = React.useState([]);
-  const [names] = React.useState(props.actorsArray);
-  const { setSelectedActors } = React.useContext(SelectedActorContext);
+  const [personName, setPersonName] = useState([]);
+  const [names] = useState(props.actorsArray);
+  const { setSelectedActors } = useContext(SelectedActorContext);
   const handleChange = (event) => {
     const {
       target: { value },

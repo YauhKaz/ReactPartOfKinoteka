@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const Img = styled.img`
@@ -13,7 +14,7 @@ const Div = styled.div`
 `;
 
 export default function PreImage(props) {
-  const [isImage, setIsImage] = React.useState(false);
+  const [isImage, setIsImage] = useState(false);
   const image = new Image();
   image.onload = function () {
     setIsImage(true);
@@ -28,7 +29,7 @@ export default function PreImage(props) {
         <Img src={props.image} alt="preimage" />
       </Div>
     );
-  } else {
-    return <p>Bad Link</p>;
   }
+  if (props.image.length === 0) return <p></p>;
+  return <p>Bad Link</p>;
 }

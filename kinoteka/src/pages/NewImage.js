@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Formik } from 'formik';
@@ -35,11 +35,11 @@ const NewImage = (props) => {
   const layoutContext = useContext(LayoutContext);
   const { theme } = layoutContext;
   const { id } = useParams();
-  const [initialValue, setInitialValue] = React.useState({
+  const [initialValue, setInitialValue] = useState({
     isMain: false,
     url: '',
   });
-  React.useEffect(() => {
+  useEffect(() => {
     if (id !== undefined) {
       const urlCurrent = `${URL}/images/` + id;
       new Api().loadOneActor(urlCurrent).then((result) => {
@@ -50,6 +50,16 @@ const NewImage = (props) => {
       });
     }
   }, []);
+
+  const handleSubmit = (values) => {
+    tempNewItem = [];
+    tempNewItem.push({
+      isMain: values.isMain,
+      url: values.url,
+    });
+    if (id === undefined) props.loadRow(tempNewItem[0]);
+    else props.editRow(id, tempNewItem[0]);
+  };
 
   const validationShema = yup.object().shape({
     isMain: yup
@@ -70,7 +80,7 @@ const NewImage = (props) => {
         sx={{
           display: 'flex',
           margin: 'auto auto',
-          width: '800px',
+          width: '100%',
           background: 'white',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -83,13 +93,7 @@ const NewImage = (props) => {
           validationSchema={validationShema}
           enableReinitialize
           onSubmit={(values) => {
-            tempNewItem = [];
-            tempNewItem.push({
-              isMain: values.isMain,
-              url: values.url,
-            });
-            if (id === undefined) props.loadRow(tempNewItem[0]);
-            else props.editRow(id, tempNewItem[0]);
+            handleSubmit(values);
           }}
         >
           {({
