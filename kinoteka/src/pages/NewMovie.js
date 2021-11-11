@@ -66,6 +66,7 @@ const NewItem = (props) => {
     if (id !== undefined) {
       const url = `${URL}/movies/` + id;
       new Api().loadOneActor(url).then((result) => {
+        console.log(result);
         const dateCreate = new Date(result.createAt);
         const dateUpdate = new Date(result.updateAt);
         const monthCreate =
@@ -90,7 +91,7 @@ const NewItem = (props) => {
           createAt: `${dateCreate.getFullYear()}-${monthCreate}-${dayCreate}`,
           updateAt: `${dateUpdate.getFullYear()}-${monthUpdate}-${dayUpdate}`,
           year: result.year,
-          images: [],
+          images: result.images[0].url,
           actors: [],
           categories: [],
         });
@@ -135,20 +136,31 @@ const NewItem = (props) => {
           enableReinitialize
           onSubmit={(values) => {
             tempNewItem = [];
-            console.log(selectedCategories);
-            if (values.images.length !== 0) {
-              let resultActors = [];
-              if (selectedActors.length !== 0) {
-                new Api().loadAllItems(`${URL}/actors`).then((result) => {
-                  selectedActors.map((elem) => {
-                    result.map((item) => {
-                      if (item.name === elem) {
-                        resultActors.push({ id: item.id });
-                      }
-                    });
+            let resultActors = [];
+            let resultCategories = [];
+            if (selectedActors.length !== 0) {
+              new Api().loadAllItems(`${URL}/actors`).then((result) => {
+                selectedActors.map((elem) => {
+                  result.map((item) => {
+                    if (item.name === elem) {
+                      resultActors.push({ id: item.id });
+                    }
                   });
                 });
-              }
+              });
+            }
+            if (selectedCategories.length !== 0) {
+              new Api().loadAllItems(`${URL}/categories`).then((result) => {
+                selectedCategories.map((elem) => {
+                  result.map((item) => {
+                    if (item.title === elem) {
+                      resultCategories.push({ id: item.id });
+                    }
+                  });
+                });
+              });
+            }
+            if (values.images.length !== 0) {
               new Api().loadNewImage(values.images).then(() => {
                 new Api().loadAllItems(`${URL}/images`).then((result) => {
                   tempNewItem.push({
@@ -159,7 +171,7 @@ const NewItem = (props) => {
                     year: Number(values.year),
                     images: [{ id: result[result.length - 1].id }],
                     actors: resultActors,
-                    categories: [],
+                    categories: resultCategories,
                   });
                   setSelectedCategories([]);
                   setSelectedActors([]);
@@ -168,18 +180,6 @@ const NewItem = (props) => {
                 });
               });
             } else {
-              let resultActors = [];
-              if (selectedActors.length !== 0) {
-                new Api().loadAllItems(`${URL}/actors`).then((result) => {
-                  selectedActors.map((elem) => {
-                    result.map((item) => {
-                      if (item.name === elem) {
-                        resultActors.push({ id: item.id });
-                      }
-                    });
-                  });
-                });
-              }
               tempNewItem.push({
                 title: values.title,
                 description: values.description,
@@ -188,7 +188,7 @@ const NewItem = (props) => {
                 year: Number(values.year),
                 images: [],
                 actors: resultActors,
-                categories: [],
+                categories: resultCategories,
               });
               if (id === undefined) props.loadRow(tempNewItem[0]);
               else props.editRow(id, tempNewItem[0]);
