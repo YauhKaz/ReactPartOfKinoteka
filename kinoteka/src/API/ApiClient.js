@@ -1,10 +1,10 @@
 const temp = process.env.REACT_APP_URL;
-// let token = [];
+let token = null;
 
 export class Api {
   constructor() {
     this.url = `${temp}/auth/login`;
-    this.token = null;
+    // this.token = null;
   }
 
   async load(data) {
@@ -16,7 +16,7 @@ export class Api {
           'Content-Type': 'application/json',
         },
       });
-      this.token = await response.json();
+      token = await response.json();
       return response;
     } catch (error) {
       console.error('Ошибка:', error);
@@ -45,7 +45,7 @@ export class Api {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token.access_token}`,
+          Authorization: `Bearer ${token.access_token}`,
         },
       });
       if (response.ok) {
@@ -63,7 +63,7 @@ export class Api {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token.access_token}`,
+          Authorization: `Bearer ${token.access_token}`,
         },
       });
       await response.json();
@@ -99,7 +99,7 @@ export class Api {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token.access_token}`,
+          Authorization: `Bearer ${token.access_token}`,
         },
       });
       if (response.ok) {
@@ -115,7 +115,7 @@ export class Api {
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${this.token.access_token}`,
+          Authorization: `Bearer ${token.access_token}`,
         },
       });
       if (response.ok) {

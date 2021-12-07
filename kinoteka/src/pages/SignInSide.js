@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,8 +15,9 @@ import Typography from '@mui/material/Typography';
 import LayoutContext from '../store/layout-context';
 import AuthContext from '../store/auth-context';
 import { useHistory } from 'react-router-dom';
-import { Api } from '../API/ApiClient';
+import { Api } from '../API/ApiClient.js';
 import styled, { ThemeProvider } from 'styled-components';
+import CustomizedSnackbars from '../components/Snackbar';
 
 function Copyright(props) {
   return (
@@ -109,14 +110,15 @@ const TextFieldComponent = styled(TextField)(
 );
 
 export default function SignInSide() {
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState(false);
   const layoutContext = useContext(LayoutContext);
   const history = useHistory();
   const { theme } = layoutContext;
   const { setIsAdmin } = useContext(AuthContext);
 
-  function toggleTheme() {
-    layoutContext.toggle(layoutContext.mode);
-  }
+  // function toggleTheme() {
+  //   layoutContext.toggle(layoutContext.mode);
+  // }
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -129,8 +131,11 @@ export default function SignInSide() {
         setIsAdmin(true);
         history.push('/movie');
       } else {
-        history.push('/');
-        alert('you have not access');
+        setIsOpenSnackbar(true);
+        setTimeout(() => {
+          setIsOpenSnackbar(false);
+          history.push('/');
+        }, 3000);
       }
     });
   };
@@ -144,6 +149,13 @@ export default function SignInSide() {
           height: '100vh',
         }}
       >
+        {isOpenSnackbar && (
+          <CustomizedSnackbars
+            isOpenProps={true}
+            type={'info'}
+            message={'You have not access'}
+          />
+        )}
         <CssBaseline />
         <Grid
           item
@@ -217,7 +229,7 @@ export default function SignInSide() {
                 label="Remember me"
               />
               <ButtonComponent
-                onClick={toggleTheme}
+                // onClick={toggleTheme}
                 type="submit"
                 fullWidth
                 variant="contained"
