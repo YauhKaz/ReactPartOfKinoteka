@@ -143,7 +143,7 @@ const NewItem = (props) => {
                   <TextField
                     label="Date of Birthday"
                     type="date"
-                    defaultValue={values.dob}
+                    value={values.dob}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'dob'}

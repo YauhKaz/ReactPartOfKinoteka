@@ -141,7 +141,12 @@ function DashboardContent() {
     new Api().loadAllItems(`${URL}/${urlEnd}`).then((result) => {
       let columnsArray = [];
       for (let key in result[0]) {
-        if (key !== 'images' && key !== 'actors' && key !== 'categories') {
+        if (
+          key !== 'id' &&
+          key !== 'images' &&
+          key !== 'actors' &&
+          key !== 'categories'
+        ) {
           columnsArray.push({ title: `${key}`, field: `${key}` });
         }
       }

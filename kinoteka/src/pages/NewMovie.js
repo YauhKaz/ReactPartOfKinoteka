@@ -243,7 +243,7 @@ const NewItem = (props) => {
                   <TextField
                     label="Date of Create"
                     type="date"
-                    defaultValue={values.createAt}
+                    value={values.createAt}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'createAt'}
@@ -259,7 +259,7 @@ const NewItem = (props) => {
                   <TextField
                     label="Date of Update"
                     type="date"
-                    defaultValue={values.updateAt}
+                    value={values.updateAt}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name={'updateAt'}
